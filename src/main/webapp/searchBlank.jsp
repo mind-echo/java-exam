@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Java考试系统--搜索填空题</title>
+<title>考试系统--搜索填空题</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/fontawesome-all.min.css">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
@@ -85,7 +85,8 @@ body {
 						<th width="50px">名称</th>
 						<th>题干</th>
 						<th width="80px">答案</th>
-						<th>知识点</th>
+						<th width="80px">知识点</th>
+						<th width="80px">操作</th>
 					</tr>
 				</thead>
 				<s:iterator value="questionList" status="st" var="item">
@@ -107,6 +108,11 @@ body {
 							<s:if test="answer8 != null"><br><s:property value="answer8" /></s:if>
 						</td>
 						<td><s:property value="knowledgePoint" /></td>
+						<td>
+							<s:if test=" #session['USER_INFO'].role==1">
+								<a href=#  onclick='deleteBlank(<s:property value="id"/>)'>删除</a>
+							</s:if>
+						</td>
 					</tr>
 				</s:iterator>
 			</table>
@@ -143,6 +149,26 @@ body {
 			form2.pageIndex.value=page-1;
 			form2.action="searchblank";
 			form2.submit();
+		}
+		function deleteBlank(id){
+			if (confirm("确定要删除该填空题吗？")) {
+				$.ajax({
+					url: "deleteBlank",
+					type: "POST",
+					data: { deleteId: id },
+					timeout: 60000, // 设置超时时间为 5 秒 (5000 毫秒)
+					success: function() {
+						location.reload();
+					},
+					error: function(xhr, textStatus, errorThrown) {
+						if (textStatus === "timeout") {
+							alert("请求超时，请稍后再试！");
+						} else {
+							alert("删除请求失败: " + errorThrown);
+						}
+					}
+				});
+			}
 		}
 	    $(document).ready(function () {
 	        $('.modal-trigger').leanModal({

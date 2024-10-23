@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Java考试系统--主页</title>
+    <title>考试系统--主页</title>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <link type="text/css" rel="stylesheet" href="css/fontawesome-all.min.css">
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
@@ -27,11 +27,12 @@
 </head>
 <body>
 	<%@ include file="include/header.jsp" %>
-	<div id="main">
+	<div id="main" style="background-image: url('images/background.jpg');  background-size: cover;  height: 93vh">
 	    <div class="container" style="padding: 20px;">
-	    	<div class="divider" style="height:20px;background:#fff;"></div>
+			<s:if test="#session['USER_INFO']!=null">
+	    	<div class="divider" style="height:20px;background:transparent;"></div>
 	        <div class="row">
-	        
+				<s:if test="#session['USER_INFO']!=null && #session['USER_INFO'].role==0">
 		        <div class="col s12 m4">
 		            <div class="card">
 		                <div class="card-image waves-effect waves-block waves-light my-opacity" >
@@ -45,21 +46,7 @@
 		                </div>
 		            </div>
 	        	</div>
-	        	
-		        <div class="col s12 m4">
-		            <div class="card">
-		                <div class="card-image waves-effect waves-block waves-light my-opacity">
-		                    <a href="questionByKnowledge.jsp"><img class="activator" src="images/categories2.jpg"></a>
-		                </div>
-		                <div class="card-content">
-		                	<a href="questionByKnowledge.jsp">
-		                    <span class="card-title activator light-green-text text-darken-4">章节练习
-		                    <i class="fas fa-sign-in-alt fa-lg right light-green-text"></i></span></a>
-		                    <p><a href="questionByKnowledge.jsp">按照章节知识点分类进行练习</a></p>
-		                </div>
-		            </div>
-	        	</div>
-	        	
+				</s:if>
 	        	<s:if test="#session['USER_INFO']!=null && #session['USER_INFO'].role==1">
 	        	<div class="col s12 m4">
 		            <div class="card">
@@ -68,9 +55,9 @@
 		                </div>
 		                <div class="card-content">
 		                	<a href="questionTypes.jsp">
-		                    <span class="card-title activator light-green-text text-darken-4">题型练习
+		                    <span class="card-title activator light-green-text text-darken-4">题型管理
 		                    <i class="fas fa-sign-in-alt fa-lg right light-green-text"></i></span></a>
-		                    <p><a href="questionTypes.jsp">按选择题、填空题、判断题分别练习</a></p>
+		                    <p><a href="questionTypes.jsp">查看选择题、填空题、判断题、简答题</a></p>
 		                </div>
 		            </div>
 	        	</div>
@@ -125,13 +112,14 @@
 	        	</s:if>
 	        	
 	        </div>
+			</s:if>
 	    </div>
 	</div>
 	
-	<s:if test="#session['USER_INFO']!=null && #session['USER_INFO'].role==1">
-	<a href="modifysettings" title="修改系统设置"><i class="fas fa-wrench fa-lg right blue-text"></i></a> | 
-	<a href="pushbroadcastmessage" title="向在线用户推送广播消息"><i class="fas fa-share-square fa-lg right red-text"></i></a>
-	</s:if>
+<%--	<s:if test="#session['USER_INFO']!=null && #session['USER_INFO'].role==1">--%>
+<%--	<a href="modifysettings" title="修改系统设置"><i class="fas fa-wrench fa-lg right blue-text"></i></a> | --%>
+<%--	<a href="pushbroadcastmessage" title="向在线用户推送广播消息"><i class="fas fa-share-square fa-lg right red-text"></i></a>--%>
+<%--	</s:if>--%>
 	
 	<%@ include file="include/footer.jsp" %>
     

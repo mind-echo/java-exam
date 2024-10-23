@@ -1,14 +1,13 @@
 package cn.lynu.lyq.java_exam.actions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import cn.lynu.lyq.java_exam.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -25,14 +24,7 @@ import cn.lynu.lyq.java_exam.dao.ExamQuestionDao;
 import cn.lynu.lyq.java_exam.dao.ExamStrategyDao;
 import cn.lynu.lyq.java_exam.dao.StudentDao;
 import cn.lynu.lyq.java_exam.dao.StudentExamScoreDao;
-import cn.lynu.lyq.java_exam.entity.BankBlankFillingQuestion;
-import cn.lynu.lyq.java_exam.entity.BankChoiceQuestion;
-import cn.lynu.lyq.java_exam.entity.BankJudgeQuestion;
-import cn.lynu.lyq.java_exam.entity.Exam;
-import cn.lynu.lyq.java_exam.entity.ExamQuestion;
-import cn.lynu.lyq.java_exam.entity.ExamStrategy;
-import cn.lynu.lyq.java_exam.entity.Student;
-import cn.lynu.lyq.java_exam.entity.StudentExamScore;
+
 @Component("examCompose")
 @Scope("prototype")
 public class ExamComposeAction extends ActionSupport {
@@ -138,7 +130,9 @@ public class ExamComposeAction extends ActionSupport {
 	}
 	
 	public String executeForCreateStrategy() throws Exception {
-		ExamStrategy es = new ExamStrategy(examDao.findById(examSelect),"新建分数分配策略",0,0,0,null);
+		ExamStrategy es = new ExamStrategy(examDao.findById(examSelect),
+				"新建分数分配策略"+new SimpleDateFormat("yyyyMMddHHmm").format(new Date()),
+				4,5,5,10,null);
 		examStrategyDao.save(es);
 		getExamQuestionCnt();
 		return SUCCESS;
@@ -181,7 +175,7 @@ public class ExamComposeAction extends ActionSupport {
 	private void getExamQuestionCnt(){
 		Exam exam=examDao.findById(examSelect); 
 		List<ExamQuestion> eqList = examQuestionDao.findByExam(exam);
-        int choiceCnt=0, blankCnt=0, judgeCnt=0;
+        int choiceCnt=0, blankCnt=0, judgeCnt=0,shortAnswerCnt=0;
         for(ExamQuestion eq:eqList){
         	if(eq.getQuestionType()==QuestionType.CHOICE.ordinal()){
         		choiceCnt++;
@@ -190,12 +184,15 @@ public class ExamComposeAction extends ActionSupport {
         		blankCnt+=countBlank(bq.getContent());
         	}else if(eq.getQuestionType()==QuestionType.JUDGE.ordinal()){
         		judgeCnt++;
+        	}else if(eq.getQuestionType()==QuestionType.SHORT_ANSWER.ordinal()){
+				shortAnswerCnt++;
         	}
         }
         eqCntMap = new HashMap<>();
         eqCntMap.put("CHOICE_CNT", choiceCnt);
         eqCntMap.put("BLANK_CNT", blankCnt);
         eqCntMap.put("JUDGE_CNT", judgeCnt);
+        eqCntMap.put("SHORT_ANSWER_CNT", shortAnswerCnt);
 	}
 	
 	private void getAllExamList(){
@@ -209,6 +206,7 @@ public class ExamComposeAction extends ActionSupport {
 	        ArrayList<BankChoiceQuestion> choiceList=new ArrayList<>();
 	        ArrayList<BankBlankFillingQuestion> blankFillingList = new ArrayList<>();
 	        ArrayList<BankJudgeQuestion> judgeList = new ArrayList<>();
+	        ArrayList<BankShortAnswerQuestion> shortAnswerList = new ArrayList<>();
 	        for(ExamQuestion eq:eqList){
 	        	if(eq.getQuestionType()==QuestionType.CHOICE.ordinal()){
 	        		choiceList.add(bankQuestionDao.findChoiceById(eq.getBankChoiceQuestion().getId()));
@@ -216,6 +214,8 @@ public class ExamComposeAction extends ActionSupport {
 	        		blankFillingList.add(bankQuestionDao.findBlankFillingById(eq.getBankBlankFillingQuestion().getId()));
 	        	}else if(eq.getQuestionType()==QuestionType.JUDGE.ordinal()){
 	        		judgeList.add(bankQuestionDao.findJudgeById(eq.getBankJudgeQuestion().getId()));
+	        	}else if(eq.getQuestionType()==QuestionType.SHORT_ANSWER.ordinal()){
+					shortAnswerList.add(bankQuestionDao.findShortAnswerById(eq.getBankShortAnswerQuestion().getId()));
 	        	}
 	        }
 	        Map<String,Object> eqListMap = new HashMap<>();
@@ -227,6 +227,7 @@ public class ExamComposeAction extends ActionSupport {
 	        }
 	        eqListMap.put("BLANK_CNT", blankCnt);
 	        eqListMap.put("JUDGE_LIST", judgeList);
+	        eqListMap.put("SHORT_ANSWER_LIST", shortAnswerList);
 	        ctx.put("EXAM_QUESTION_"+exam.getId(), eqListMap);
         }
 	}

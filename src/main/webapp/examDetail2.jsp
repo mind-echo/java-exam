@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Java考试系统--试卷详细</title>
+<title>考试系统--试卷详细</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/fontawesome-all.min.css">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
@@ -72,6 +72,11 @@
 			<s:if test="judgeList!=null && judgeList.size()>0"><br><hr>判断题:<br>
 				<s:iterator value="judgeList" status="st" var="item">
 				<a id="judgeTag<s:property value='#st.index+1'/>" href="#judge<s:property value='#st.index+1'/>">第<s:property value='#st.index+1'/>题</a>&nbsp;
+				</s:iterator>
+			</s:if>
+			<s:if test="shortAnswerList!=null && shortAnswerList.size()>0"><br><hr>简答题:<br>
+				<s:iterator value="shortAnswerList" status="st" var="item">
+				<a id="shortAnswerTag<s:property value='#st.index+1'/>" href="#shortAnswer<s:property value='#st.index+1'/>">第<s:property value='#st.index+1'/>题</a>&nbsp;
 				</s:iterator>
 			</s:if>
 			<hr>
@@ -196,6 +201,24 @@
 			value="<s:property value="@cn.lynu.lyq.java_exam.actions.ExamDetailShowAction2@determineJudgeChecked(#st.index)"/>" />
 	</s:iterator>
 	</table>
+
+	<s:if test="shortAnswerList!=null && shortAnswerList.size()>0"><h4>简答题</h4></s:if>
+	<table class="mytable">
+		<s:iterator value="shortAnswerList" status="st" var="item">
+			<tr id="shortAnswer<s:property value='#st.index+1'/>"  style="height: 200px;margin: 50px;border-radius:2px; box-shadow: 5px 5px 3px #aaa;">
+				<td  style="vertical-align:middle;border-bottom: 1px solid #eee;">
+					<span class="blue-text text-lighten-2" style="display:inline-block;width:30px;"><s:property value="#st.index+1"/>.</span>
+					<span><s:property value="content"/></span>
+					<br>
+					<span><input type='text' id="short_answer_q<s:property value='#st.index+1'/>"
+						 value="<s:property value="@cn.lynu.lyq.java_exam.actions.ExamDetailShowAction2@determineShortAnswerChecked(#st.index)"/>"
+						   name="short_answer_q<s:property value='#st.index+1'/>"
+						   onchange='changeShortAnswer(<s:property value='#st.index+1'/>)'
+								 style='width:200px' placeholder='输入答案'/></span>
+				</td>
+			</tr>
+		</s:iterator>
+	</table>
 	<div class="row">
 		<div class="divider" style="height: 10px;background-color: #fff;"></div>
 		<div class="col s12">
@@ -219,7 +242,7 @@
 		setQuestionTags();
 		
 		function setQuestionTags(){
-			var choiceIdx = 0, blankFillingIdx = 0, judgeIdx = 0;
+			var choiceIdx = 0, blankFillingIdx = 0, judgeIdx = 0,shortAnswerIdx = 0;
 			
 			<s:iterator value="choiceList" status="st1" var="item">
 				choiceIdx = "<s:property value='#st1.index+1'/>";
@@ -239,6 +262,13 @@
 				judgeIdx = "<s:property value='#st3.index+1'/>";
 				if($("#judge_q"+judgeIdx).val().trim()!=""){
 					$("#judgeTag"+judgeIdx).addClass("answeredTag");
+				}
+			</s:iterator>
+
+			<s:iterator value="shortAnswerList" status="st4" var="item">
+				shortAnswerIdx = "<s:property value='#st4.index+1'/>";
+				if($("#short_answer_q"+shortAnswerIdx).val().trim()!=""){
+					$("#shortAnswerTag"+shortAnswerIdx).addClass("answeredTag");
 				}
 			</s:iterator>
 		}
@@ -269,6 +299,15 @@
 				$("#blankFillingTag"+idx).addClass("answeredTag");	
 			}else{
 				$("#blankFillingTag"+idx).removeClass("answeredTag");	
+			}
+		}
+
+		function changeShortAnswer(idx){
+			var currentBlankAnswer= $("#short_answer_q"+idx).val();
+			if(currentBlankAnswer.trim()!=""){
+				$("#shortAnswerTag"+idx).addClass("answeredTag");
+			}else{
+				$("#shortAnswerTag"+idx).removeClass("answeredTag");
 			}
 		}
 		

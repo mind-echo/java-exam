@@ -31,8 +31,13 @@ public class QuestionImportAction extends ActionSupport {
 	private File judgeImportFile;
 	private String judgeImportFileFileName;//文件名
 	private String judgeImportFileContentType;//文件类型
-	private String judgeFilePath;	
-	
+	private String judgeFilePath;
+
+	private File shortAnswerImportFile;
+	private String shortAnswerImportFileFileName;//文件名
+	private String shortAnswerImportFileContentType;//文件类型
+	private String shortAnswerFilePath;
+
 	@Resource
 	private BankQuestionDao bankQuestionDao;
 	
@@ -109,6 +114,38 @@ public class QuestionImportAction extends ActionSupport {
 		this.judgeFilePath = judgeFilePath;
 	}
 
+	public File getShortAnswerImportFile() {
+		return shortAnswerImportFile;
+	}
+
+	public void setShortAnswerImportFile(File shortAnswerImportFile) {
+		this.shortAnswerImportFile = shortAnswerImportFile;
+	}
+
+	public String getShortAnswerImportFileFileName() {
+		return shortAnswerImportFileFileName;
+	}
+
+	public void setShortAnswerImportFileFileName(String shortAnswerImportFileFileName) {
+		this.shortAnswerImportFileFileName = shortAnswerImportFileFileName;
+	}
+
+	public String getShortAnswerImportFileContentType() {
+		return shortAnswerImportFileContentType;
+	}
+
+	public void setShortAnswerImportFileContentType(String shortAnswerImportFileContentType) {
+		this.shortAnswerImportFileContentType = shortAnswerImportFileContentType;
+	}
+
+	public String getShortAnswerFilePath() {
+		return shortAnswerFilePath;
+	}
+
+	public void setShortAnswerFilePath(String shortAnswerFilePath) {
+		this.shortAnswerFilePath = shortAnswerFilePath;
+	}
+
 	@Override
 	public String execute() throws Exception {  //只针对选择题
 		logger.info("导入选择题");
@@ -134,6 +171,15 @@ public class QuestionImportAction extends ActionSupport {
 		logger.debug("judgeImportFile="+judgeImportFile);
 		logger.debug("judgeFilePath="+judgeFilePath);
 		this.addActionMessage(cnt+"道判断题已经导入题库");
+		return SUCCESS;
+	}
+
+	public String executeForShortAnswer() throws Exception {
+		logger.info("导入简答题");
+		int cnt = bankQuestionDao.importShortAnswerFromTxt(shortAnswerImportFile);
+		logger.debug("shortAnswerImportFile="+shortAnswerImportFile);
+		logger.debug("shortAnswerFilePath="+shortAnswerFilePath);
+		this.addActionMessage(cnt+"道简答题已经导入题库");
 		return SUCCESS;
 	}
 	

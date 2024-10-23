@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Java考试系统--试卷提交概览</title>
+<title>考试系统--试卷提交概览</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
 <link type="text/css" rel="stylesheet" href="css/material_icons.css">
@@ -44,13 +44,19 @@
 		<tr>
 			<td>共有<s:property value="submittedAnswerMap.BLANK_FILLING.size "/>道填空题</td>
 			<td style="<s:if test="submittedAnswerMap.BLANK_FILLING.size - submittedCntMap.BLANK_FILLING>0">color: red;</s:if><s:else>color:blue;</s:else>">
-				你已经答了<s:property value="submittedCntMap.BLANK_FILLING "/>个空白，未答<s:property value="submittedAnswerMap.BLANK_FILLING.size - submittedCntMap.BLANK_FILLING "/>道。
+				你已经答了<s:property value="submittedCntMap.BLANK_FILLING "/>道，未答<s:property value="submittedAnswerMap.BLANK_FILLING.size - submittedCntMap.BLANK_FILLING "/>道。
 			</td>
 		</tr>
 		<tr>
 			<td>共有<s:property value="submittedAnswerMap.JUDGE.size "/>道判断题</td>
 			<td style="<s:if test="submittedAnswerMap.JUDGE.size - submittedCntMap.JUDGE>0">color: red;</s:if><s:else>color:blue;</s:else>">
 				你已经答了<s:property value="submittedCntMap.JUDGE "/>道，未答<s:property value="submittedAnswerMap.JUDGE.size - submittedCntMap.JUDGE "/>道。
+			</td>
+		</tr>
+		<tr>
+			<td>共有<s:property value="submittedAnswerMap.SHORT_ANSWER.size "/>道简答题</td>
+			<td style="<s:if test="submittedAnswerMap.SHORT_ANSWER.size - submittedCntMap.SHORT_ANSWER>0">color: red;</s:if><s:else>color:blue;</s:else>">
+				你已经答了<s:property value="submittedCntMap.SHORT_ANSWER "/>道，未答<s:property value="submittedAnswerMap.SHORT_ANSWER.size - submittedCntMap.SHORT_ANSWER "/>道。
 			</td>
 		</tr>
 	</table>

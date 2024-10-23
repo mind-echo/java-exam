@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import cn.lynu.lyq.java_exam.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -23,13 +24,6 @@ import cn.lynu.lyq.java_exam.common.QuestionType;
 import cn.lynu.lyq.java_exam.dao.BankQuestionDao;
 import cn.lynu.lyq.java_exam.dao.ExamQuestionDao;
 import cn.lynu.lyq.java_exam.dao.StudentExamScoreDao;
-import cn.lynu.lyq.java_exam.entity.BankBlankFillingQuestion;
-import cn.lynu.lyq.java_exam.entity.BankChoiceQuestion;
-import cn.lynu.lyq.java_exam.entity.BankJudgeQuestion;
-import cn.lynu.lyq.java_exam.entity.Exam;
-import cn.lynu.lyq.java_exam.entity.ExamQuestion;
-import cn.lynu.lyq.java_exam.entity.Student;
-import cn.lynu.lyq.java_exam.entity.StudentExamScore;
 import cn.lynu.lyq.java_exam.utils.PropertyUtils;
 
 @Component("studentExamList")
@@ -86,6 +80,7 @@ public class StudentExamListAction extends ActionSupport {
 		        ArrayList<BankChoiceQuestion> choiceList=new ArrayList<>();
 		        ArrayList<BankBlankFillingQuestion> blankFillingList = new ArrayList<>();
 		        ArrayList<BankJudgeQuestion> judgeList = new ArrayList<>();
+		        ArrayList<BankShortAnswerQuestion> shortAnswerList = new ArrayList<>();
 		        for(ExamQuestion eq:eqList){
 		        	if(eq.getQuestionType()==QuestionType.CHOICE.ordinal()){
 		        		choiceList.add(bankQuestionDao.findChoiceById(eq.getBankChoiceQuestion().getId()));
@@ -93,6 +88,8 @@ public class StudentExamListAction extends ActionSupport {
 		        		blankFillingList.add(bankQuestionDao.findBlankFillingById(eq.getBankBlankFillingQuestion().getId()));
 		        	}else if(eq.getQuestionType()==QuestionType.JUDGE.ordinal()){
 		        		judgeList.add(bankQuestionDao.findJudgeById(eq.getBankJudgeQuestion().getId()));
+		        	}else if(eq.getQuestionType()==QuestionType.SHORT_ANSWER.ordinal()){
+						shortAnswerList.add(bankQuestionDao.findShortAnswerById(eq.getBankShortAnswerQuestion().getId()));
 		        	}
 		        }
 		        Map<String,Object> eqListMap = new HashMap<>();
@@ -104,6 +101,7 @@ public class StudentExamListAction extends ActionSupport {
 		        }
 		        eqListMap.put("BLANK_CNT", blankCnt);
 		        eqListMap.put("JUDGE_LIST", judgeList);
+		        eqListMap.put("SHORT_ANSWER_LIST", shortAnswerList);
 		        ctx.put("EXAM_QUESTION_"+exam.getId(), eqListMap);
 			}
 			

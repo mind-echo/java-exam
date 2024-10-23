@@ -90,5 +90,21 @@ public abstract class BankQuestion {
 	public void setComposeFlag(int composeFlag) {
 		this.composeFlag = composeFlag;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "BankQuestion{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", content='" + content + '\'' +
+				", picLocation='" + picLocation + '\'' +
+				", description='" + description + '\'' +
+				", answer='" + answer + '\'' +
+				", createDate=" + createDate +
+				", contributor='" + contributor + '\'' +
+				", knowledgePoint='" + knowledgePoint + '\'' +
+				", memo='" + memo + '\'' +
+				", composeFlag=" + composeFlag +
+				'}';
+	}
 }

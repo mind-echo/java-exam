@@ -19,17 +19,19 @@ public class ExamStrategy {
 	private int choicePerScore;
 	private int blankPerScore;
 	private int judgePerScore;
+	private int shortAnswerPerScore;
 	private String comment;
 	
 	public ExamStrategy(){}
 	
-	public ExamStrategy(Exam exam, String name, int choicePerScore, int blankPerScore, int judgePerScore,
+	public ExamStrategy(Exam exam, String name, int choicePerScore, int blankPerScore, int judgePerScore, int shortAnswerPerScore,
 			String comment) {
 		this.exam = exam;
 		this.name = name;
 		this.choicePerScore = choicePerScore;
 		this.blankPerScore = blankPerScore;
 		this.judgePerScore = judgePerScore;
+		this.shortAnswerPerScore = shortAnswerPerScore;
 		this.comment = comment;
 	}
 
@@ -81,6 +83,14 @@ public class ExamStrategy {
 
 	public void setJudgePerScore(int judgePerScore) {
 		this.judgePerScore = judgePerScore;
+	}
+
+	public int getShortAnswerPerScore() {
+		return shortAnswerPerScore;
+	}
+
+	public void setShortAnswerPerScore(int shortAnswerPerScore) {
+		this.shortAnswerPerScore = shortAnswerPerScore;
 	}
 
 	public String getComment() {

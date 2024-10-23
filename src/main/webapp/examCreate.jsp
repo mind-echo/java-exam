@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Java考试系统--固定抽题组卷--创建试卷</title>
+<title>考试系统--固定抽题组卷--创建试卷</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/fontawesome-all.min.css">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
@@ -73,6 +73,10 @@
 					<span class="yellow-text text-lighten-1">加入判断题
 	        		<i class="material-icons right">search</i></span>
 	    		</a>
+				<a href="#searchShortAnswerdialog" class="modal-trigger brown darken-4 waves-effect waves-green btn" >
+					<span class="yellow-text text-lighten-1">加入简答题
+	        		<i class="material-icons right">search</i></span>
+	    		</a>
             </div>
 
 			<div class="row">
@@ -81,6 +85,7 @@
 			        <li class="tab"><a href="#choiceTab">选择题</a></li>
 			        <li class="tab"><a href="#blankTab">填空题</a></li>
 			        <li class="tab"><a href="#judgeTab">判断题</a></li>
+			        <li class="tab"><a href="#shortAnswerTab">简答题</a></li>
 			      </ul>
 			    </div>
 			    <div id="choiceTab" class="col s12"><!-- 选择题 选项卡 -->
@@ -126,6 +131,17 @@
 					</s:iterator>
 					</table>
 			    </div>
+				<div id="shortAnswerTab" class="col s12"><!-- 简答题 选项卡 -->
+					<table class="mytable">
+						<s:iterator value="#session.EXAM_CREATE_SHOWANSEWERLIST" status="st" var="item">
+							<tr style="background-color:<s:if test="#st.odd">#efefef</s:if><s:else>#ffffff</s:else>">
+								<td><s:property value="#st.index+1"/>. </td>
+								<td style="text-align:left;"><s:property value="content"/></td>
+							</tr>
+							<tr><td colspan="2" style="height:20px"></td></tr>
+						</s:iterator>
+					</table>
+				</div>
 			 </div>
 
 			<div class="row">
@@ -172,6 +188,18 @@
         </div>
         <div class="modal-footer">
             <a href="#" onclick="selectQuestionSubmit('judgeselectform');"
+            class="waves-effect waves-light btn btn-flat modal-action modal-close">确定</a>
+        </div>
+    </div>
+	<!--  简答题题搜索对话框 -->
+	<div id="searchShortAnswerdialog" class="modal modal-fixed-footer"
+	style="width:90%; height:95%;">
+        <div class="modal-content">
+            <h4>从题库中加入简答题：</h4>
+            <%@ include file="include/shortAnswerSearch.jsp" %>
+        </div>
+        <div class="modal-footer">
+            <a href="#" onclick="selectQuestionSubmit('shortAnswerselectform');"
             class="waves-effect waves-light btn btn-flat modal-action modal-close">确定</a>
         </div>
     </div>

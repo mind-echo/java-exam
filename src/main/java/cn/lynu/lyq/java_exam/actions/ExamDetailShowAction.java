@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import cn.lynu.lyq.java_exam.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -19,11 +20,6 @@ import cn.lynu.lyq.java_exam.common.QuestionType;
 import cn.lynu.lyq.java_exam.dao.BankQuestionDao;
 import cn.lynu.lyq.java_exam.dao.ExamDao;
 import cn.lynu.lyq.java_exam.dao.ExamQuestionDao;
-import cn.lynu.lyq.java_exam.entity.BankBlankFillingQuestion;
-import cn.lynu.lyq.java_exam.entity.BankChoiceQuestion;
-import cn.lynu.lyq.java_exam.entity.BankJudgeQuestion;
-import cn.lynu.lyq.java_exam.entity.Exam;
-import cn.lynu.lyq.java_exam.entity.ExamQuestion;
 
 @Component("examDetailShow")
 @Scope("prototype")
@@ -40,7 +36,8 @@ public class ExamDetailShowAction extends ActionSupport {
 	List<BankChoiceQuestion> choiceList=new ArrayList<>();
     List<BankBlankFillingQuestion> blankFillingList = new ArrayList<>();
     List<BankJudgeQuestion> judgeList = new ArrayList<>();
-	
+    List<BankShortAnswerQuestion> shortAnswerList = new ArrayList<>();
+
 	public List<BankChoiceQuestion> getChoiceList() {
 		return choiceList;
 	}
@@ -65,6 +62,14 @@ public class ExamDetailShowAction extends ActionSupport {
 		this.judgeList = judgeList;
 	}
 
+	public List<BankShortAnswerQuestion> getShortAnswerList() {
+		return shortAnswerList;
+	}
+
+	public void setShortAnswerList(List<BankShortAnswerQuestion> shortAnswerList) {
+		this.shortAnswerList = shortAnswerList;
+	}
+
 	@Override
 	public String execute() throws Exception {
 		ActionContext ctx=ActionContext. getContext();
@@ -78,6 +83,7 @@ public class ExamDetailShowAction extends ActionSupport {
         choiceList=new ArrayList<>();
         blankFillingList = new ArrayList<>();
         judgeList = new ArrayList<>();
+		shortAnswerList = new ArrayList<>();
         for(ExamQuestion eq:eqList){
         	if(eq.getQuestionType()==QuestionType.CHOICE.ordinal()){
         		choiceList.add(bankQuestionDao.findChoiceById(eq.getBankChoiceQuestion().getId()));
@@ -85,6 +91,8 @@ public class ExamDetailShowAction extends ActionSupport {
         		blankFillingList.add(bankQuestionDao.findBlankFillingById(eq.getBankBlankFillingQuestion().getId()));
         	}else if(eq.getQuestionType()==QuestionType.JUDGE.ordinal()){
         		judgeList.add(bankQuestionDao.findJudgeById(eq.getBankJudgeQuestion().getId()));
+        	}else if(eq.getQuestionType()==QuestionType.SHORT_ANSWER.ordinal()){
+				shortAnswerList.add(bankQuestionDao.findShortAnswerById(eq.getBankShortAnswerQuestion().getId()));
         	}
         }
 		return SUCCESS;

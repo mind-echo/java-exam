@@ -36,6 +36,7 @@ public class ExamHandInAction extends ActionSupport {
 	int choiceScore = 0;
 	int blankScore =0; 
 	int judgeScore =0;
+	int shortAnswerScore =0;
 	int totalScore =0;
 	
 	@Resource
@@ -81,6 +82,14 @@ public class ExamHandInAction extends ActionSupport {
 		this.totalScore = totalScore;
 	}
 
+	public int getShortAnswerScore() {
+		return shortAnswerScore;
+	}
+
+	public void setShortAnswerScore(int shortAnswerScore) {
+		this.shortAnswerScore = shortAnswerScore;
+	}
+
 	@Override
 	public String execute() throws Exception {
 		ActionContext ctx = ActionContext.getContext();
@@ -96,6 +105,7 @@ public class ExamHandInAction extends ActionSupport {
 		List<Integer> choiceIdList = eqIdMap.get(QuestionType.CHOICE);
 		List<Integer> blankIdList = eqIdMap.get(QuestionType.BLANK_FILLING);
 		List<Integer> judgeIdList = eqIdMap.get(QuestionType.JUDGE);
+		List<Integer> shortAnswerIdList = eqIdMap.get(QuestionType.SHORT_ANSWER);
 		Student s1=(Student)session.get("USER_INFO");
 		String examIds = (String)session.get("EXAM_ID");
 		Exam theExam = examDao.findById(Integer.parseInt(examIds));
@@ -108,14 +118,20 @@ public class ExamHandInAction extends ActionSupport {
 			this.addActionError("您已经交过卷子，并得到成绩了。不允许再次交卷！");
 			return ERROR;
 		}else{
-	//		int scorePerChoice = 10, scorePerBlank = 5, scorePerJudge = 10;
-			String examStrategyIds = (String)session.get("EXAM_STRATEGY_ID");
-			int examStrategyId = Integer.parseInt(examStrategyIds);
-			ExamStrategy strategy= examStrategyDao.findById(examStrategyId);
+			List<ExamStrategy> strategys = examStrategyDao.findByExam(theExam);
+			ExamStrategy strategy;
+			if (strategys.size() > 0){
+				strategy = strategys.get(0);
+			} else {
+				this.addActionError("问卷未添加分数分配策略，请联系管理员添加");
+				return ERROR;
+			}
+
 			int scorePerChoice = strategy.getChoicePerScore();
 			int scorePerBlank = strategy.getBlankPerScore();
 			int scorePerJudge = strategy.getJudgePerScore();
-			
+			int shortAnswerPerScore = strategy.getShortAnswerPerScore();
+
 			List<Object> choiceAnswerList = answerMap.get(QuestionType.CHOICE);
 			List<Object> choiceSubmittedList = submitMap.get(QuestionType.CHOICE);
 			for(int i=0; choiceAnswerList!=null && i<choiceAnswerList.size(); i++){
@@ -159,8 +175,20 @@ public class ExamHandInAction extends ActionSupport {
 					judgeScore += scorePerJudge;
 				}
 			}
-			totalScore = choiceScore+blankScore+judgeScore;
-			logger.debug("总分="+(choiceScore+blankScore+judgeScore));
+
+			List<Object> shortAnswerAnswerList = answerMap.get(QuestionType.SHORT_ANSWER);
+			List<Object> shortAnswerSubmittedList = submitMap.get(QuestionType.SHORT_ANSWER);
+			for(int i=0; shortAnswerAnswerList!=null && i<shortAnswerAnswerList.size(); i++){
+				ExamQuestion eq = examQuestionDao.findById(shortAnswerIdList.get(i));
+				ExamQuestionAnswer eqa = new ExamQuestionAnswer(eq,s1,(String)shortAnswerSubmittedList.get(i));
+				examQuestionAnswerDao.save(eqa);
+				if(shortAnswerAnswerList.get(i).equals(shortAnswerSubmittedList.get(i))){
+					shortAnswerScore += shortAnswerPerScore;
+				}
+			}
+
+			totalScore = choiceScore+blankScore+judgeScore+shortAnswerScore;
+			logger.debug("总分="+(totalScore));
 			
 			for(StudentExamScore ses : sesList){
 				ses.setExamPhase(ExamPhase.FINAL_SCORED.getChineseName());

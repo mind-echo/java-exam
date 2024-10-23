@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Java考试系统--试卷提交</title>
+<title>考试系统--试卷提交</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
 <link type="text/css" rel="stylesheet" href="css/material_icons.css">
@@ -36,6 +36,9 @@
 		</tr>
 		<tr>
 			<td>判断题得分<s:property value="judgeScore"/></td>
+		</tr>
+		<tr>
+			<td>简答题得分<s:property value="shortAnswerScore"/></td>
 		</tr>
 	</table>
 	

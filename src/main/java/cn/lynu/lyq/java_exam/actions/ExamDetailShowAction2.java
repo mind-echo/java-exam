@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import cn.lynu.lyq.java_exam.entity.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +27,6 @@ import cn.lynu.lyq.java_exam.dao.BankQuestionDao;
 import cn.lynu.lyq.java_exam.dao.ExamDao;
 import cn.lynu.lyq.java_exam.dao.ExamQuestionDao;
 import cn.lynu.lyq.java_exam.dao.StudentExamScoreDao;
-import cn.lynu.lyq.java_exam.entity.BankBlankFillingQuestion;
-import cn.lynu.lyq.java_exam.entity.BankChoiceQuestion;
-import cn.lynu.lyq.java_exam.entity.BankJudgeQuestion;
-import cn.lynu.lyq.java_exam.entity.Exam;
-import cn.lynu.lyq.java_exam.entity.ExamQuestion;
-import cn.lynu.lyq.java_exam.entity.Student;
-import cn.lynu.lyq.java_exam.entity.StudentExamScore;
 import cn.lynu.lyq.java_exam.utils.PropertyUtils;
 import cn.lynu.lyq.java_exam.utils.QuestionUtils;
 
@@ -53,7 +47,8 @@ public class ExamDetailShowAction2 extends ActionSupport {
 	private List<BankChoiceQuestion> choiceList=new ArrayList<>();
     private List<BankBlankFillingQuestion> blankFillingList = new ArrayList<>();
     private List<BankJudgeQuestion> judgeList = new ArrayList<>();
-    
+    private List<BankShortAnswerQuestion> shortAnswerList = new ArrayList<>();
+
 	private Map<QuestionType,List<Object>> examAnswerMap = new HashMap<>(); //正确答案
 	
 	private int remainingTime; //剩余时间
@@ -97,6 +92,14 @@ public class ExamDetailShowAction2 extends ActionSupport {
 
 	public void setAutoSubmitFlag(boolean autoSubmitFlag) {
 		this.autoSubmitFlag = autoSubmitFlag;
+	}
+
+	public List<BankShortAnswerQuestion> getShortAnswerList() {
+		return shortAnswerList;
+	}
+
+	public void setShortAnswerList(List<BankShortAnswerQuestion> shortAnswerList) {
+		this.shortAnswerList = shortAnswerList;
 	}
 
 	@Override
@@ -216,6 +219,20 @@ public class ExamDetailShowAction2 extends ActionSupport {
     			examAnswerMap.put(QuestionType.JUDGE, answersList);
     			eqIdList.add(eq.getId());
     			eqIdMap.put(QuestionType.JUDGE, eqIdList);
+        	}else if(eq.getQuestionType()==QuestionType.SHORT_ANSWER.ordinal()){
+				BankShortAnswerQuestion answerById = bankQuestionDao.findShortAnswerById(eq.getBankShortAnswerQuestion().getId());
+				shortAnswerList.add(answerById);
+
+    			List<Object> answersList = examAnswerMap.get(QuestionType.SHORT_ANSWER);
+    			List<Integer> eqIdList = eqIdMap.get(QuestionType.SHORT_ANSWER);
+    			if(answersList==null){
+    				answersList = new ArrayList<Object>();
+    				eqIdList = new ArrayList<Integer>();
+    			}
+    			answersList.add(answerById.getAnswer());
+    			examAnswerMap.put(QuestionType.SHORT_ANSWER, answersList);
+    			eqIdList.add(eq.getId());
+    			eqIdMap.put(QuestionType.SHORT_ANSWER, eqIdList);
         	}
         }
         logger.debug(examAnswerMap.toString());
@@ -397,6 +414,24 @@ public class ExamDetailShowAction2 extends ActionSupport {
 		submittedAnswerMap = submittedAnswerMap==null?new HashMap<QuestionType,List<Object>>():submittedAnswerMap;
 		
 		List<Object> judgeAnswerList =  (List<Object>)submittedAnswerMap.get(QuestionType.JUDGE);
+		if(judgeAnswerList!=null && judgeAnswerList.size()>0){
+			return judgeAnswerList.get(index).toString();
+		}else{
+			return "";
+		}
+	}
+
+	/*
+	 * 根据session判断“判断题”是否被选中
+	 */
+	public static String determineShortAnswerChecked(int index){
+		ActionContext ctx=ActionContext.getContext();
+		Map<String,Object> sessionMap = ctx.getSession();
+		@SuppressWarnings("unchecked")
+		Map<QuestionType,List<Object>> submittedAnswerMap = (Map<QuestionType,List<Object>>)sessionMap.get("EXAM_SUBMITTED_ANSWER");
+		submittedAnswerMap = submittedAnswerMap==null?new HashMap<QuestionType,List<Object>>():submittedAnswerMap;
+
+		List<Object> judgeAnswerList =  (List<Object>)submittedAnswerMap.get(QuestionType.SHORT_ANSWER);
 		if(judgeAnswerList!=null && judgeAnswerList.size()>0){
 			return judgeAnswerList.get(index).toString();
 		}else{

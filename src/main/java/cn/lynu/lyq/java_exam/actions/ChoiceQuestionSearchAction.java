@@ -27,7 +27,8 @@ public class ChoiceQuestionSearchAction extends ActionSupport{
 	private int totalPage;
 	private int pageIndex;
 	private static final int PAGE_SIZE = 10;
-	
+	public int deleteId;
+
 	@Resource
 	private BankQuestionDao bankQuestionDao;
 
@@ -97,6 +98,14 @@ public class ChoiceQuestionSearchAction extends ActionSupport{
 		this.pageIndex = pageIndex;
 	}
 
+	public int getDeleteId() {
+		return deleteId;
+	}
+
+	public void setDeleteId(int deleteId) {
+		this.deleteId = deleteId;
+	}
+
 	@Override
 	public String execute() throws Exception {//初始结果
 //		contentSearch="";
@@ -126,5 +135,9 @@ public class ChoiceQuestionSearchAction extends ActionSupport{
 		return SUCCESS;
 	}
 
+	public String deleteQuestion(){
+		bankQuestionDao.delete(bankQuestionDao.findChoiceById(deleteId));
+		return SUCCESS;
+	}
 
 }

@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Java考试系统--试卷详细（含答案）</title>
+<title>考试系统--试卷详细（含答案）</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
 <link type="text/css" rel="stylesheet" href="css/material_icons.css">
@@ -46,7 +46,7 @@ h2 {
 	<%@ include file="include/header.jsp"%>
 	<div id="main">
 		<h5 style="text-align:center;" class="light-green-text text-darken-1">
-			<s:property value="student.name"/>的"<s:property value="exam.name"/>"考试(exam_id=<s:property value="exam.id"/>)的答卷情况如下：
+			<s:property value="student.name"/>的"<s:property value="exam.name"/>"考试的答卷情况如下：
 		</h5>
 		<hr>
 		<h5 style="text-align:center; ">
@@ -141,6 +141,30 @@ h2 {
 					<td colspan="2">你的回答是：<s:property
 							value="%{examQuestionAnswerMap.JUDGE[#st.index]}" /> , 正确答案是：<s:property
 							value="%{examAnswerMap.JUDGE[#st.index]}" /></td>
+				</tr>
+				<tr>
+					<td colspan="2" style="height: 20px"></td>
+				</tr>
+			</s:iterator>
+		</table>
+
+		<h5 style="text-align:center; ">
+			简答题(共<s:property value="%{examQuestionAnswerMap.SHORT_ANSWER.size()}" />题，每题
+			<s:property value="examStrategy.shortAnswerPerScore" />
+			分)
+		</h5>
+		<table class="mytable">
+			<s:iterator value="shortAnswerList" status="st" var="item">
+				<tr
+					style="background-color:<s:if test="#st.odd">#efefef</s:if><s:else>#ffffff</s:else>">
+					<td><s:property value="#st.index+1" />.</td>
+					<td style="text-align: left;"><s:property value="content" /></td>
+				</tr>
+				<tr
+					style="background-color:<s:if test="#st.odd">#efefef</s:if><s:else>#ffffff</s:else>;<s:if test="%{examQuestionAnswerMap.SHORT_ANSWER[#st.index]!=examAnswerMap.SHORT_ANSWER[#st.index]}">color:red;</s:if>">
+					<td colspan="2">你的回答是：<s:property
+							value="%{examQuestionAnswerMap.SHORT_ANSWER[#st.index]}" /> , 正确答案是：<s:property
+							value="%{examAnswerMap.SHORT_ANSWER[#st.index]}" /></td>
 				</tr>
 				<tr>
 					<td colspan="2" style="height: 20px"></td>

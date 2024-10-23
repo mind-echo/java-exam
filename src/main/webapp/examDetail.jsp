@@ -1,41 +1,56 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>试卷详细</title>
-<style>
-	#main{
-		
-	}
-	h2{
-		display: block;
-		margin: 0 auto;
-		text-align: center;
-	}
-	.mytable{
-		border-collapse: collapse;
-		border-top: 2px solid #ddd;
-		border-bottom: 2px solid #ddd;
-		margin: 20px auto;
-		width: 80%;
-	}
-	.mytable tr{
-		width: 80%;
-	}
-	.mytable td{
-		padding: 5px 10px;
-	}
-	a{text-decoration: none;}
-	a:LINK{color: #12f;}
-	a:VISITED{color: #a2e;}
-	a:HOVER{color: #17f;}
-</style>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>考试系统--试卷详细</title>
+	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+	<link type="text/css" rel="stylesheet" href="css/fontawesome-all.min.css">
+	<link type="text/css" rel="stylesheet" href="css/materialize.min.css">
+	<link type="text/css" rel="stylesheet" href="css/material_icons.css">
+	<link type="text/css" rel="stylesheet" href="css/nouislider.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style type="text/css">
+		body {
+			font-family: Roboto, "Microsoft YaHei";
+			font-size: large;
+		}
+		.mytable{
+			width: 80%;
+			margin: 0 auto;
+		}
+		#examtime{
+			position:fixed;
+			bottom: 10px;
+			right: 10px;
+			background-color: #ee1111;
+			color: #eeee11;
+			padding: 10px;
+			border-radius: 5px;
+			font-size: medium;
+		}
+		#positioner{
+			position:fixed;
+			top: 80px;
+			right: 10px;
+			width: 10%;
+			color: #1111ee;
+			background-color: #c0ca33;
+			padding: 10px;
+			border-radius: 5px;
+			font-size: medium;
+		}
+		.answeredTag{
+			background-color: #1f1;
+			color:#1d1;
+		}
+	</style>
 </head>
 <body>
-	<div id="main">
+<%@ include file="include/header.jsp" %>
+	<div class="container">
 	<h2>选择题</h2>
 	<table class="mytable">
 	<s:iterator value="choiceList" status="st" var="item">
@@ -71,6 +86,17 @@
 	<h2>判断题</h2>
 	<table class="mytable">
 	<s:iterator value="judgeList" status="st" var="item">
+		<tr style="background-color:<s:if test="#st.odd">#efefef</s:if><s:else>#ffffff</s:else>">
+			<td><s:property value="#st.index+1"/>. </td>
+			<td style="text-align:left;"><s:property value="content"/></td>
+		</tr>
+		<tr><td colspan="2" style="height:20px"></td></tr>
+	</s:iterator>
+	</table>
+
+	<h2>简答题</h2>
+	<table class="mytable">
+	<s:iterator value="shortAnswerList" status="st" var="item">
 		<tr style="background-color:<s:if test="#st.odd">#efefef</s:if><s:else>#ffffff</s:else>">
 			<td><s:property value="#st.index+1"/>. </td>
 			<td style="text-align:left;"><s:property value="content"/></td>

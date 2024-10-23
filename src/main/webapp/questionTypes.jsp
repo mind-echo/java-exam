@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Java考试系统--试题类型</title>
+<title>考试系统--试题类型</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/fontawesome-all.min.css">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
@@ -72,6 +72,20 @@ a{
 							<span class="card-title activator light-green-text text-darken-4">判断题
 							<i class="fas fa-sign-in-alt fa-lg right light-green-text"></i></span></a>
 							<p><a href="<s:url action="searchjudge"/>">列出和搜索判断题</a></p>
+						</div>
+					</div>
+				</div>
+
+				<div class="col s12 m4">
+					<div class="card">
+						<div class="card-image waves-effect waves-block waves-light my-opacity">
+							<a href="<s:url action="searchShortAnswer"/>"><img class="activator" src="images/shortAnswerQuestion.png"></a>
+						</div>
+						<div class="card-content">
+							<a href="<s:url action="searchShortAnswer"/>">
+							<span class="card-title activator light-green-text text-darken-4">简答题
+							<i class="fas fa-sign-in-alt fa-lg right light-green-text"></i></span></a>
+							<p><a href="<s:url action="searchShortAnswer"/>">列出和搜索简答题</a></p>
 						</div>
 					</div>
 				</div>

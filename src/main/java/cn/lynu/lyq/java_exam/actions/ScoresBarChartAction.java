@@ -2,6 +2,7 @@ package cn.lynu.lyq.java_exam.actions;
 
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -61,7 +62,6 @@ public class ScoresBarChartAction extends ActionSupport {
 //		double[][] data = new double[][] { { 90 , 80 , 77 , 85 } };
 //		String[] rowKeys = {""};
 //		String[] columnKeys = { "张三", "李四", "王二", "马六" };
-		
 		ActionContext ctx =ActionContext.getContext();
 		String classSearch=ctx.getParameters().get("classSearch").getValue();
 		String examNameSearch=ctx.getParameters().get("examNameSearch").getValue();
@@ -106,10 +106,10 @@ public class ScoresBarChartAction extends ActionSupport {
 		double[][] data = new double[][] { scoreArray };
 		String[] rowKeys = {""};
 		String[] columnKeys = stuNameArraySorted;
-//		logger.debug(">>>>>>>>>>学生名列表："+Arrays.toString(stuNameArraySorted));
-//		logger.debug(">>>>>>>>>>学生名length："+stuNameArraySorted.length);
-//		logger.debug(">>>>>>>>>>分数列表："+Arrays.toString(scoreArray));
-//		logger.debug(">>>>>>>>>>分数length"+scoreArray.length);
+		logger.debug(">>>>>>>>>>学生名列表："+ Arrays.toString(stuNameArraySorted));
+		logger.debug(">>>>>>>>>>学生名length："+stuNameArraySorted.length);
+		logger.debug(">>>>>>>>>>分数列表："+Arrays.toString(scoreArray));
+		logger.debug(">>>>>>>>>>分数length"+scoreArray.length);
 		
 		CategoryDataset dataset = DatasetUtilities.createCategoryDataset(rowKeys, columnKeys, data);
 

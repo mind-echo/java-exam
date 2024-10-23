@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Java考试系统--考试列表</title>
+	<title>考试系统--考试列表</title>
 	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 	<link type="text/css" rel="stylesheet" href="css/fontawesome-all.min.css">
 	<link type="text/css" rel="stylesheet" href="css/materialize.min.css">
@@ -78,6 +78,14 @@
 							每空<font color="blue"><s:property value="examStrategy.blankPerScore"/></font>分，<br>
 							判断题<font color="#b71c1c"><s:property value="#attr['EXAM_QUESTION_'+exam.id].JUDGE_LIST.size" /></font>题，
 							每题<font color="blue"><s:property value="examStrategy.judgePerScore"/></font>分<br>
+							简答题<font color="#b71c1c"><s:property value="#attr['EXAM_QUESTION_'+exam.id].SHORT_ANSWER_LIST.size" /></font>题，
+							每题<font color="blue"><s:property value="examStrategy.shortAnswerPerScore"/></font>分<br>
+							<button class="teal right tooltipped" data-position="right" data-tooltip="导出为word文档(*.docx)"
+									style="border: 0;border-radius: 5px;" onclick="downloadExportFile('<s:url action="downloadexportedfilewithouranswer"><s:param name="exam_id" value="%{exam.id}"></s:param><s:param name="exam_strategy_id" value="%{examStrategy.id}"></s:param></s:url>')">
+									<span class="yellow-text text-lighten-1">导出
+        							<i class="fas fa-file-export fa-sm yellow-text"></i></span>
+							</button>
+						</td>
 					</tr>
 				</s:iterator>
 			</table>
@@ -108,22 +116,22 @@
 						<td><s:if test="exam.type==1">随机抽题组卷</s:if><s:else>固定组卷</s:else></td>
 						<td>
 							<a class="namelink"
-							<s:if test='examDetailAllowed'>
+<%--							<s:if test='examDetailAllowed'>--%>
 							href="<s:url action="examdetailwithanswer"><s:param name="stu_id" value="%{student.id}"></s:param><s:param name="exam_id" value="%{exam.id}"></s:param><s:param name="exam_strategy_id" value="%{examStrategy.id}"></s:param></s:url>"
-							</s:if>
-							<s:else>
-							href="javascript:void(0)"
-							</s:else>
+<%--							</s:if>--%>
+<%--							<s:else>--%>
+<%--							href="javascript:void(0)"--%>
+<%--							</s:else>--%>
 							>
 								<s:property value="score" />
 							</a>
-							<s:if test='examDetailAllowed'>
+<%--							<s:if test='examDetailAllowed'>--%>
 								<button class="teal right tooltipped" data-position="right" data-tooltip="导出为word文档(*.docx)" 
 								style="border: 0;border-radius: 5px;" onclick="downloadExportFile('<s:url action="downloadexportedfile"><s:param name="stu_id" value="%{student.id}"></s:param><s:param name="exam_id" value="%{exam.id}"></s:param><s:param name="exam_strategy_id" value="%{examStrategy.id}"></s:param></s:url>')">
 									<span class="yellow-text text-lighten-1">导出
         							<i class="fas fa-file-export fa-sm yellow-text"></i></span>
 								</button>
-							</s:if>
+<%--							</s:if>--%>
 						</td>
 					</tr>
 				</s:iterator>

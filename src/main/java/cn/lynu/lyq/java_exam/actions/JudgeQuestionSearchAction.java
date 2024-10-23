@@ -27,6 +27,8 @@ public class JudgeQuestionSearchAction extends ActionSupport{
 	private int totalPage;
 	private int pageIndex;
 	private static final int PAGE_SIZE = 10;
+	public int deleteId;
+
 	@Resource
 	private BankQuestionDao bankQuestionDao;
 	
@@ -63,6 +65,15 @@ public class JudgeQuestionSearchAction extends ActionSupport{
 	public int getPageIndex() {
 		return pageIndex;
 	}
+
+	public int getDeleteId() {
+		return deleteId;
+	}
+
+	public void setDeleteId(int deleteId) {
+		this.deleteId = deleteId;
+	}
+
 	public void setPageIndex(int pageIndex) {
 		this.pageIndex = pageIndex;
 	}
@@ -80,6 +91,11 @@ public class JudgeQuestionSearchAction extends ActionSupport{
 		logger.debug("answerSearch="+answerSearch);
 		logger.debug("knowledgeSearch="+knowledgeSearch);
 		questionList = bankQuestionDao.findJudgeForSearch(contentSearch,answerSearch,knowledgeSearch);
+		return SUCCESS;
+	}
+
+	public String deleteQuestion(){
+		bankQuestionDao.delete(bankQuestionDao.findJudgeById(deleteId));
 		return SUCCESS;
 	}
 }

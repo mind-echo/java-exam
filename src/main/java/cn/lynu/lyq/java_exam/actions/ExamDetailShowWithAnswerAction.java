@@ -1,14 +1,12 @@
 package cn.lynu.lyq.java_exam.actions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import cn.lynu.lyq.java_exam.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -24,14 +22,6 @@ import cn.lynu.lyq.java_exam.dao.ExamQuestionAnswerDao;
 import cn.lynu.lyq.java_exam.dao.ExamQuestionDao;
 import cn.lynu.lyq.java_exam.dao.ExamStrategyDao;
 import cn.lynu.lyq.java_exam.dao.StudentDao;
-import cn.lynu.lyq.java_exam.entity.BankBlankFillingQuestion;
-import cn.lynu.lyq.java_exam.entity.BankChoiceQuestion;
-import cn.lynu.lyq.java_exam.entity.BankJudgeQuestion;
-import cn.lynu.lyq.java_exam.entity.Exam;
-import cn.lynu.lyq.java_exam.entity.ExamQuestion;
-import cn.lynu.lyq.java_exam.entity.ExamQuestionAnswer;
-import cn.lynu.lyq.java_exam.entity.ExamStrategy;
-import cn.lynu.lyq.java_exam.entity.Student;
 import cn.lynu.lyq.java_exam.utils.QuestionUtils;
 
 @Component("examDetailShowWithAnswer")
@@ -55,7 +45,8 @@ public class ExamDetailShowWithAnswerAction extends ActionSupport {
 	List<BankChoiceQuestion> choiceList=new ArrayList<>();
     List<BankBlankFillingQuestion> blankFillingList = new ArrayList<>();
     List<BankJudgeQuestion> judgeList = new ArrayList<>();
-    
+    List<BankShortAnswerQuestion> shortAnswerList = new ArrayList<>();
+
     Map<QuestionType,List<Integer>> eqIdMap = new HashMap<>();
     private Map<QuestionType,List<Object>> examAnswerMap = new HashMap<>();// 正确答案
     private Map<QuestionType,List<Object>> examQuestionAnswerMap = new HashMap<>(); //学生的答案
@@ -133,6 +124,14 @@ public class ExamDetailShowWithAnswerAction extends ActionSupport {
 
 	public void setStudent(Student student) {
 		this.student = student;
+	}
+
+	public List<BankShortAnswerQuestion> getShortAnswerList() {
+		return shortAnswerList;
+	}
+
+	public void setShortAnswerList(List<BankShortAnswerQuestion> shortAnswerList) {
+		this.shortAnswerList = shortAnswerList;
 	}
 
 	@Override
@@ -238,6 +237,27 @@ public class ExamDetailShowWithAnswerAction extends ActionSupport {
     			
     			eqIdList.add(eq.getId());
     			eqIdMap.put(QuestionType.JUDGE, eqIdList);
+        	}else if(eq.getQuestionType()==QuestionType.SHORT_ANSWER.ordinal()){
+				BankShortAnswerQuestion shortAnswerById = bankQuestionDao.findShortAnswerById(eq.getBankShortAnswerQuestion().getId());
+				shortAnswerList.add(shortAnswerById);
+
+    			List<Object> answersList = examAnswerMap.get(QuestionType.SHORT_ANSWER);
+    			List<Object> questionAnswersList = examQuestionAnswerMap.get(QuestionType.SHORT_ANSWER);
+    			List<Integer> eqIdList = eqIdMap.get(QuestionType.SHORT_ANSWER);
+    			if(answersList==null){
+    				answersList = new ArrayList<Object>();
+    				questionAnswersList = new ArrayList<Object>();
+    				eqIdList = new ArrayList<Integer>();
+    			}
+    			answersList.add(Objects.isNull(shortAnswerById.getAnswer()) ? "" : shortAnswerById.getAnswer());
+    			examAnswerMap.put(QuestionType.SHORT_ANSWER, answersList);
+
+    			ExamQuestionAnswer eqa = examQuestionAnswerDao.findByStudentAndExamQuestion(student,eq);
+    			questionAnswersList.add(eqa.getAnswer());
+    			examQuestionAnswerMap.put(QuestionType.SHORT_ANSWER, questionAnswersList);
+
+    			eqIdList.add(eq.getId());
+    			eqIdMap.put(QuestionType.SHORT_ANSWER, eqIdList);
         	}
         }
 		return SUCCESS;

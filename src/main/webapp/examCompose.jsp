@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Java考试系统--固定抽题组卷</title>
+<title>考试系统--固定抽题组卷</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
 <link type="text/css" rel="stylesheet" href="css/material_icons.css">
@@ -78,10 +78,11 @@
 							<input type="radio" class="with-gap" name="examSelect" id="examSelect<s:property value="id" />" 
 							value="<s:property value="id" />" <s:if test="id==examSelect">checked</s:if>  
 							onclick=" getStrategyList(<s:property value="id"/>,
-							<s:property value="#attr['EXAM_QUESTION_'+id].CHOICE_LIST.size" />,
-							<s:property value="#attr['EXAM_QUESTION_'+id].BLANK_CNT" />,
-							<s:property value="#attr['EXAM_QUESTION_'+id].JUDGE_LIST.size" />);">
-							<label for="examSelect<s:property value="id" />" ><s:property value="#st.index+1" /></label>
+								<s:property value="#attr['EXAM_QUESTION_'+id].CHOICE_LIST.size"/>,
+								<s:property value="#attr['EXAM_QUESTION_'+id].BLANK_CNT"/>,
+								<s:property value="#attr['EXAM_QUESTION_'+id].JUDGE_LIST.size"/>,
+								<s:property value="#attr['EXAM_QUESTION_'+id].SHORT_ANSWER_LIST.size"/>);">
+							<label for="examSelect<s:property value="id" />"><s:property value="#st.index+1" /></label>
 						</td>
 						<td><a class="namelink"
 							href="<s:url action="examdetail"><s:param name="exam_id" value="%{id}"></s:param></s:url>"><s:property
@@ -94,8 +95,16 @@
 							<s:property value="#attr['EXAM_QUESTION_'+id].BLANK_LIST.size" />道(共含
 							<s:property value="#attr['EXAM_QUESTION_'+id].BLANK_CNT" />个空),
 							判断题
-							<s:property value="#attr['EXAM_QUESTION_'+id].JUDGE_LIST.size" />道。
-							</td>
+							<s:property value="#attr['EXAM_QUESTION_'+id].JUDGE_LIST.size" />道,
+							简答题
+							<s:property value="#attr['EXAM_QUESTION_'+id].SHORT_ANSWER_LIST.size" />道。
+							<button class="teal right tooltipped" data-position="right" data-tooltip="导出为word文档(*.docx)"
+									style="border: 0;border-radius: 5px;"
+									onclick="downloadExportFile('<s:url action="downloadexportedfilewithouranswerwithoutstrategy"><s:param name="exam_id" value="%{id}"></s:param></s:url>')">
+									<span class="yellow-text text-lighten-1">导出
+        							<i class="fas fa-file-export fa-sm yellow-text"></i></span>
+							</button>
+						</td>
 					</tr>
 				</s:iterator>
 			</table>
@@ -113,6 +122,7 @@
 						<th>每道选择题分数</th>
 						<th>填空题每个空分数</th>
 						<th>每道判断题分数</th>
+						<th>每道简答题分数</th>
 						<th>计算总分</th>
 					</tr>
 				</thead>
@@ -136,38 +146,60 @@
 							<a href=# onclick='changeChoicePerScore(true, <s:property value="choicePerScore"/>,<s:property value="id"/>,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size" />,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT" />,
-							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />);'><img src='images/plus1.png' width='20'></a>
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size"/>);'><img src='images/plus1.png' width='20'></a>
 							<a href=# onclick='changeChoicePerScore(false,<s:property value="choicePerScore"/>,<s:property value="id"/>,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size" />,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT" />,
-							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />);'><img src='images/minus1.png' width='20'></a>
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size"/>);'><img src='images/minus1.png' width='20'></a>
 						</td>
 						<td id='blankScoreText<s:property value="id"/>'>
 							<s:property value="blankPerScore"/>
 							<a href=# onclick='changeBlankPerScore(true, <s:property value="blankPerScore"/>,<s:property value="id"/>,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size" />,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT" />,
-							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />);'><img src='images/plus1.png' width='20'></a>
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size"/>);'><img src='images/plus1.png' width='20'></a>
 							<a href=# onclick='changeBlankPerScore(false,<s:property value="blankPerScore"/>,<s:property value="id"/>,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size" />,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT" />,
-							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />);'><img src='images/minus1.png' width='20'></a>
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size"/>);'><img src='images/minus1.png' width='20'></a>
 						</td>
 						<td id='judgeScoreText<s:property value="id"/>'>
 							<s:property value="judgePerScore"/>
 							<a href=# onclick='changeJudgePerScore(true, <s:property value="judgePerScore"/>,<s:property value="id"/>,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size" />,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT" />,
-							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />);'><img src='images/plus1.png' width='20'></a>
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size"/>);'><img src='images/plus1.png' width='20'></a>
 							<a href=# onclick='changeJudgePerScore(false,<s:property value="judgePerScore"/>,<s:property value="id"/>,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size" />,
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT" />,
-							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />);'><img src='images/minus1.png' width='20'></a>
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size"/>);'><img src='images/minus1.png' width='20'></a>
+						</td>
+						<td id='shortAnswerScoreText<s:property value="id"/>'>
+							<s:property value="shortAnswerPerScore"/>
+							<a href=# onclick='changeShortAnswerPerScore(true, <s:property value="shortAnswerPerScore"/>,<s:property value="id"/>,
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size" />,
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT" />,
+							<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size" />,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size"/>);'><img src='images/plus1.png' width='20'></a>
+							<a href=# onclick='changeShortAnswerPerScore(false,<s:property
+									value="shortAnswerPerScore"/>,<s:property value="id"/>,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size"/>,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT"/>,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size"/>,
+								<s:property value="#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size"/>);'><img
+									src='images/minus1.png' width='20'></a>
 						</td>
 						<td id='totalScoreText<s:property value="id"/>'>
 							<s:property value="#attr['EXAM_QUESTION_'+examSelect].CHOICE_LIST.size*choicePerScore
 							+#attr['EXAM_QUESTION_'+examSelect].BLANK_CNT*blankPerScore
-							+#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size*judgePerScore"/>
+							+#attr['EXAM_QUESTION_'+examSelect].JUDGE_LIST.size*judgePerScore
+							+#attr['EXAM_QUESTION_'+examSelect].SHORT_ANSWER_LIST.size*shortAnswerPerScore"/>
 							<a href=# class='btn btn-small' style='margin-left:5px;' onclick='deleteStrategy(<s:property value="id"/>)'>删除</a>
 						</td>
 					</tr>
@@ -199,7 +231,7 @@
     		</div>
     		
     		<button class="red darken-4 waves-effect waves-teal btn-flat" 
-			type="button" style="margin-top:20px;<s:if test='studentList==null || studentList.size==0'>display:none;</s:if>" id="selectStudentButton"
+			type="button" style="margin-top:20px;<s:if test='studentList==null || studentList.size==0'>display:none;</s:if>" id="createstudentexamButton"
 			onclick="form1.action='createstudentexam';form1.submit();">
 				<span class="yellow-text text-lighten-1">为这些学生创建考试
         		<i class="material-icons right">loop</i></span>
@@ -213,21 +245,38 @@
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	
 	<script>
+		function downloadExportFile(downloadUrl){
+			// 创建一个隐藏的 <a> 元素
+			var link = document.createElement('a');
+			link.style.display = 'none';
+			link.href = downloadUrl;
+			link.setAttribute('download', ''); // 可选：设置下载文件名
+
+			// 将 <a> 元素添加到页面中
+			document.body.appendChild(link);
+
+			// 模拟点击 <a> 元素
+			link.click();
+
+			// 移除 <a> 元素
+			document.body.removeChild(link);
+		}
+
 		function createStrategy(examId){
 			$.post("createexamstrategy",
 					{examSelect:form1.examSelect.value},
 					function(data,status){
-						getStrategyList(form1.examSelect.value,data.CHOICE_CNT,data.BLANK_CNT,data.JUDGE_CNT);
+						getStrategyList(form1.examSelect.value,data.CHOICE_CNT,data.BLANK_CNT,data.JUDGE_CNT,data.SHORT_ANSWER_CNT);
 					});
 		}
 		function deleteStrategy(strategyId){
 			$.post("deleteexamstrategy",
 					{examSelect:form1.examSelect.value, strategyId:strategyId},
 					function(data,status){
-						getStrategyList(form1.examSelect.value,data.CHOICE_CNT,data.BLANK_CNT,data.JUDGE_CNT);
+						getStrategyList(form1.examSelect.value,data.CHOICE_CNT,data.BLANK_CNT,data.JUDGE_CNT,data.SHORT_ANSWER_CNT);
 					});			
 		}
-		function getStrategyList(examId,choiceCnt,blankCnt,judgeCnt){
+		function getStrategyList(examId,choiceCnt,blankCnt,judgeCnt,shortAnswerCnt){
 			$.post("liststrategy",
 					{examSelect:form1.examSelect.value},
 					function(data,status){
@@ -243,29 +292,37 @@
 							showHtml+="<td id='choiceScoreText"+data[i].id+"'>"
 										+data[i].choicePerScore
 										+"<a href=# "+" onclick='changeChoicePerScore(true,"
-										+data[i].choicePerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt
+										+data[i].choicePerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 										+");'><img src='images/plus1.png' width='20'></a>"
 										+"<a href=# "+" onclick='changeChoicePerScore(false,"
-										+data[i].choicePerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt
+										+data[i].choicePerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 										+");'><img src='images/minus1.png' width='20'></a></td>"
 							showHtml+="<td id='blankScoreText"+data[i].id+"'>"
 										+data[i].blankPerScore
 										+"<a href=# "+" onclick='changeBlankPerScore(true,"
-										+data[i].blankPerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt
+										+data[i].blankPerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 										+");'><img src='images/plus1.png' width='20'></a>"
 										+"<a href=# "+" onclick='changeBlankPerScore(false,"
-										+data[i].blankPerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt
+										+data[i].blankPerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 										+");'><img src='images/minus1.png' width='20'></a></td>"
 							showHtml+="<td id='judgeScoreText"+data[i].id+"'>"
 										+data[i].judgePerScore
 										+"<a href=# "+" onclick='changeJudgePerScore(true,"
-										+data[i].judgePerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt
+										+data[i].judgePerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 										+");'><img src='images/plus1.png' width='20'></a>"
 										+"<a href=# "+" onclick='changeJudgePerScore(false,"
-										+data[i].judgePerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt
+										+data[i].judgePerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
+										+");'><img src='images/minus1.png' width='20'></a></td>"
+							showHtml+="<td id='shortAnswerScoreText"+data[i].id+"'>"
+										+data[i].shortAnswerPerScore
+										+"<a href=# "+" onclick='changeShortAnswerPerScore(true,"
+										+data[i].shortAnswerPerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
+										+");'><img src='images/plus1.png' width='20'></a>"
+										+"<a href=# "+" onclick='changeShortAnswerPerScore(false,"
+										+data[i].shortAnswerPerScore+","+data[i].id+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 										+");'><img src='images/minus1.png' width='20'></a></td>"
 							showHtml+="<td id='totalScoreText" +data[i].id +"'>"
-										+(data[i].choicePerScore*choiceCnt+data[i].blankPerScore*blankCnt+data[i].judgePerScore*judgeCnt)
+										+(data[i].choicePerScore*choiceCnt+data[i].blankPerScore*blankCnt+data[i].judgePerScore*judgeCnt+data[i].shortAnswerPerScore*shortAnswerCnt)
 										+"<a href=# class='btn btn-small' style='margin-left:5px;' onclick='deleteStrategy("
 										+data[i].id+")'>删除</a></td></tr>";
 						}
@@ -283,55 +340,73 @@
 					}
 			);
 		}
-		function changeChoicePerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt){
+		function changeChoicePerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt,shortAnswerCnt){
 			if(plusOrMinus) value++; else value--;
 			$.post("updatechoicescore",
 					{score:value,strategyId:strategyId},
 					function(data,status){
 						$("#choiceScoreText"+strategyId).html(data.choicePerScore+"<a href=# "+"' onclick='changeChoicePerScore(true,"
-								+data.choicePerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt
+								+data.choicePerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 								+");'><img src='images/plus1.png' width='20'></a>"
 								+"<a href=# "+"' onclick='changeChoicePerScore(false,"
-								+data.choicePerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt
+								+data.choicePerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 								+");'><img src='images/minus1.png' width='20'></a>");
-						$("#totalScoreText"+strategyId).html( (data.choicePerScore*choiceCnt+data.blankPerScore*blankCnt+data.judgePerScore*judgeCnt)
+						$("#totalScoreText"+strategyId).html( (data.choicePerScore*choiceCnt+data.blankPerScore*blankCnt+data.judgePerScore*judgeCnt+data.shortAnswerPerScore*shortAnswerCnt)
 								+"<a href=# class='btn btn-small' style='margin-left:5px;' onclick='deleteStrategy("+data.id+")'>删除</a>");
 					}
 			);
 		}
-		function changeBlankPerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt){
+		function changeBlankPerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt,shortAnswerCnt){
 			if(plusOrMinus) value++; else value--;
 			$.post("updateblankscore",
 					{score:value,strategyId:strategyId},
 					function(data,status){
 						$("#blankScoreText"+strategyId).html(data.blankPerScore+"<a href=# "+"' onclick='changeBlankPerScore(true,"
-								+data.blankPerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt
+								+data.blankPerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 								+");'><img src='images/plus1.png' width='20'></a>"
 								+"<a href=# "+"' onclick='changeBlankPerScore(false,"
-								+data.blankPerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt
+								+data.blankPerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 								+");'><img src='images/minus1.png' width='20'></a>");
-						$("#totalScoreText"+strategyId).html( (data.choicePerScore*choiceCnt+data.blankPerScore*blankCnt+data.judgePerScore*judgeCnt) 
+						$("#totalScoreText"+strategyId).html( (data.choicePerScore*choiceCnt+data.blankPerScore*blankCnt+data.judgePerScore*judgeCnt+data.shortAnswerPerScore*shortAnswerCnt)
 								+"<a href=# class='btn btn-small' style='margin-left:5px;' onclick='deleteStrategy("+data.id+")'>删除</a>");
 					}
 			);
 		}
-		function changeJudgePerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt){
+		function changeJudgePerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt,shortAnswerCnt){
 			if(plusOrMinus) value++; else value--;
 			$.post("updatejudgescore",
 					{score:value,strategyId:strategyId},
 					function(data,status){
 						$("#judgeScoreText"+strategyId).html(data.judgePerScore+"<a href=# "+"' onclick='changeJudgePerScore(true,"
-								+data.judgePerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt
+								+data.judgePerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 								+");'><img src='images/plus1.png' width='20'></a>"
 								+"<a href=# "+"' onclick='changeJudgePerScore(false,"
-								+data.judgePerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt
+								+data.judgePerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
 								+");'><img src='images/minus1.png' width='20'></a>");
-						$("#totalScoreText"+strategyId).html((data.choicePerScore*choiceCnt+data.blankPerScore*blankCnt+data.judgePerScore*judgeCnt)
+						$("#totalScoreText"+strategyId).html((data.choicePerScore*choiceCnt+data.blankPerScore*blankCnt+data.judgePerScore*judgeCnt+data.shortAnswerPerScore*shortAnswerCnt)
 											+"<a href=# class='btn btn-small' style='margin-left:5px;' onclick='deleteStrategy("+data.id+")'>删除</a>");
 					}
 			);
 		}
-		
+		function changeShortAnswerPerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt,shortAnswerCnt){
+			if(plusOrMinus) value++; else value--;
+			$.post("updateshortanswerscore",
+					{score:value,strategyId:strategyId},
+					function(data,status){
+						$("#shortAnswerScoreText"+strategyId).html(data.shortAnswerPerScore+"<a href=# "+"' onclick='changeShortAnswerPerScore(true,"
+								+data.shortAnswerPerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
+								+");'><img src='images/plus1.png' width='20'></a>"
+								+"<a href=# "+"' onclick='changeShortAnswerPerScore(false,"
+								+data.shortAnswerPerScore+","+strategyId+","+choiceCnt+","+blankCnt+","+judgeCnt+","+shortAnswerCnt
+								+");'><img src='images/minus1.png' width='20'></a>");
+						$("#totalScoreText"+strategyId).html((data.choicePerScore*choiceCnt+data.blankPerScore*blankCnt+data.judgePerScore*judgeCnt+data.shortAnswerPerScore*shortAnswerCnt)
+											+"<a href=# class='btn btn-small' style='margin-left:5px;' onclick='deleteStrategy("+data.id+")'>删除</a>");
+					}
+			);
+		}
+
+
+
 	    $(document).ready(function () {
 	        $('.modal-trigger').leanModal({
 	            dismissible: true, //是否点模态对话框外面就可以关闭

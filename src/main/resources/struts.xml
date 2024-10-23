@@ -55,6 +55,20 @@
 				<param name="bufferSize">8192</param>
 			</result>
 		</action>
+		<action name="downloadexportedfilewithouranswer" class="downloadExportedFile" method="exportEmptyExam">
+			<result type="stream">
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename=${fileName}</param>
+				<param name="bufferSize">8192</param>
+			</result>
+		</action>
+		<action name="downloadexportedfilewithouranswerwithoutstrategy" class="downloadExportedFile" method="exportEmptyExamWithoutStrategy">
+			<result type="stream">
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename=${fileName}</param>
+				<param name="bufferSize">8192</param>
+			</result>
+		</action>
 		
 		<action name="examdetail2" class="examDetailShow2">
 			<result>examDetail2.jsp</result>
@@ -95,6 +109,9 @@
 		<action name="importjudge" class="questionImport" method="executeForJudge">
 			<result>importData.jsp</result>
 		</action>
+		<action name="importShortAnswer" class="questionImport" method="executeForShortAnswer">
+			<result>importData.jsp</result>
+		</action>
 		<action name="importstudent" class="studentImport">
 			<result>importData.jsp</result>
 		</action>
@@ -113,12 +130,22 @@
 				<param name="root">questionList</param>
 			</result>
 		</action>
+		<action name="deleteChoice" class="choiceQuestionSearch" method="deleteQuestion">
+			<result type="chain">
+				<param name="actionName">searchchoice</param>
+			</result>
+		</action>
 		<action name="choicedetail" class="choiceDetail">
 			<result>choiceDetail.jsp</result>
 		</action>
 		
 		<action name="searchblank" class="blankQuestionSearch">
 			<result>searchBlank.jsp</result>
+		</action>
+		<action name="deleteBlank" class="blankQuestionSearch" method="deleteQuestion">
+			<result type="chain">
+				<param name="actionName">searchblank</param>
+			</result>
 		</action>
 		<action name="blanksearchlist" class="blankQuestionSearch"
 			method="executeForSearch">
@@ -137,6 +164,11 @@
 		<action name="searchjudge" class="judgeQuestionSearch">
 			<result>searchJudge.jsp</result>
 		</action>
+		<action name="deletejudge" class="judgeQuestionSearch" method="deleteQuestion">
+			<result type="chain">
+				<param name="actionName">searchjudge</param>
+			</result>
+		</action>
 		<action name="judgesearchlist" class="judgeQuestionSearch"
 			method="executeForSearch">
 			<result>searchJudge.jsp</result>
@@ -149,6 +181,27 @@
 		</action>
 		<action name="judgedetail" class="judgeDetail">
 			<result>judgeDetail.jsp</result>
+		</action>
+		<action name="searchShortAnswer" class="shortAnswerQuestionSearch">
+			<result>searchShortAnswer.jsp</result>
+		</action>
+		<action name="deleteShortAnswer" class="shortAnswerQuestionSearch" method="deleteQuestion">
+			<result type="chain">
+				<param name="actionName">searchShortAnswer</param>
+			</result>
+		</action>
+		<action name="shortAnswersearchlist" class="shortAnswerQuestionSearch"
+				method="executeForSearch">
+			<result>searchShortAnswer.jsp</result>
+		</action>
+		<action name="shortAnswersearchlist1" class="shortAnswerQuestionSearch"
+				method="executeForSearch"><!-- 判断题 抽题对话框 -->
+			<result type="json">
+				<param name="root">questionList</param>
+			</result>
+		</action>
+		<action name="shortAnswerdetail" class="shortAnswerDetail">
+			<result>shortAnswerDetail.jsp</result>
 		</action>
 
 		<!-- 组卷 -->
@@ -216,6 +269,12 @@
 		</action>
 		<action name="updatejudgescore" class="updateStrategyScore"
 			method="updateForJudge">
+			<result type="json">
+				<param name="root">updatedStrategy</param>
+			</result>
+		</action>
+		<action name="updateshortanswerscore" class="updateStrategyScore"
+				method="updateForShortAnswer">
 			<result type="json">
 				<param name="root">updatedStrategy</param>
 			</result>

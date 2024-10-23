@@ -67,4 +67,12 @@ public class UpdateStrategyScoreAction extends ActionSupport{
 		examStrategyDao.update(updatedStrategy);
 		return SUCCESS;
 	}
+
+	public String updateForShortAnswer(){
+		logger.info("更新简答题策略");
+		updatedStrategy = examStrategyDao.findById(strategyId);
+		updatedStrategy.setShortAnswerPerScore(score);
+		examStrategyDao.update(updatedStrategy);
+		return SUCCESS;
+	}
 }

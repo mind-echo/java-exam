@@ -1,12 +1,11 @@
 package cn.lynu.lyq.java_exam.actions;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import cn.lynu.lyq.java_exam.entity.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -19,10 +18,6 @@ import cn.lynu.lyq.java_exam.common.Constants;
 import cn.lynu.lyq.java_exam.dao.BankQuestionDao;
 import cn.lynu.lyq.java_exam.dao.ExamDao;
 import cn.lynu.lyq.java_exam.dao.ExamQuestionDao;
-import cn.lynu.lyq.java_exam.entity.BankBlankFillingQuestion;
-import cn.lynu.lyq.java_exam.entity.BankChoiceQuestion;
-import cn.lynu.lyq.java_exam.entity.BankJudgeQuestion;
-import cn.lynu.lyq.java_exam.entity.Exam;
 import cn.lynu.lyq.java_exam.utils.PropertyUtils;
 
 @Component("examCreate")
@@ -36,7 +31,8 @@ public class ExamCreateAction extends ActionSupport {
 	private int[] choiceSelect;//对话框中的checkbox
 	private int[] blankSelect;//对话框中的checkbox
 	private int[] judgeSelect;//对话框中的checkbox
-	
+	private int[] shortAnswerSelect;//对话框中的checkbox
+
 	@Resource
 	private ExamDao examDao;
 	@Resource
@@ -84,6 +80,14 @@ public class ExamCreateAction extends ActionSupport {
 		this.judgeSelect = judgeSelect;
 	}
 
+	public int[] getShortAnswerSelect() {
+		return shortAnswerSelect;
+	}
+
+	public void setShortAnswerSelect(int[] shortAnswerSelect) {
+		this.shortAnswerSelect = shortAnswerSelect;
+	}
+
 	@Override
 	public String execute() throws Exception {
 		ActionContext ctx=ActionContext.getContext();
@@ -129,6 +133,14 @@ public class ExamCreateAction extends ActionSupport {
 				judgeListSelected.add(bankQuestionDao.findJudgeById(id));
 			session.put("EXAM_CREATE_JUDGELIST",judgeListSelected);
 		}
+		if(shortAnswerSelect!=null){
+			@SuppressWarnings("unchecked")
+			List<BankShortAnswerQuestion> questions = (List<BankShortAnswerQuestion>)session.get("EXAM_CREATE_SHOWANSEWERLIST");
+			if(questions==null) questions = new ArrayList<>();
+			for(int id:shortAnswerSelect)
+				questions.add(bankQuestionDao.findShortAnswerById(id));
+			session.put("EXAM_CREATE_SHOWANSEWERLIST",questions);
+		}
 		return SUCCESS;
 	}
 	
@@ -138,6 +150,16 @@ public class ExamCreateAction extends ActionSupport {
 		Map<String,Object> session = ctx.getSession();
 		logger.debug("examName="+examName);
 		logger.debug("examDetail="+examDetail);
+
+		if (StringUtils.isBlank(examName)){
+			this.addActionError("试卷名称不能为空");
+			return ERROR;
+		}
+		if (Objects.nonNull(examDao.findByName(examName))){
+			this.addActionError("试卷名称不能重复！");
+			return ERROR;
+		}
+
 		
 		Exam exam=new Exam(examName,examDetail,0); //固定抽题
 		exam.setCreateDate(new Date());
@@ -145,7 +167,8 @@ public class ExamCreateAction extends ActionSupport {
 		List<BankChoiceQuestion> choiceListSelected = (List<BankChoiceQuestion>)session.get("EXAM_CREATE_CHOICELIST");
 		List<BankBlankFillingQuestion> blankListSelected = (List<BankBlankFillingQuestion>)session.get("EXAM_CREATE_BLANKLIST");
 		List<BankJudgeQuestion> judgeListSelected = (List<BankJudgeQuestion>)session.get("EXAM_CREATE_JUDGELIST");
-		examDao.examCreateWithQuestions(exam, choiceListSelected, blankListSelected, judgeListSelected);
+		List<BankShortAnswerQuestion> shortAnswerListSelected = (List<BankShortAnswerQuestion>)session.get("EXAM_CREATE_SHOWANSEWERLIST");
+		examDao.examCreateWithQuestions(exam, choiceListSelected, blankListSelected, judgeListSelected,shortAnswerListSelected);
 		return SUCCESS;
 	}
 

@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Java考试系统--数据导入</title>
+<title>考试系统--数据导入</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/fontawesome-all.min.css">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
@@ -34,7 +34,7 @@
 	<hr>
 	<table class="mytable">
 		<tr>
-			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">选择题：（<a href="other/选择题import.txt">导入格式示例</a>）</span></td>
+			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">选择题：（<a href="other/选择题import.txt" download="选择题import.txt">导入格式示例</a>）</span></td>
 			<td>
 			    <div class="file-field input-field">
                     <div class="btn">
@@ -55,7 +55,7 @@
     		</td>
 		</tr>
 		<tr>
-			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">填空题：（<a href="other/填空题import.txt">导入格式示例</a>）</span></td>
+			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">填空题：（<a href="other/填空题import.txt" download="填空题import.txt">导入格式示例</a>）</span></td>
 			<td>
 			    <div class="file-field input-field">
                     <div class="btn">
@@ -76,7 +76,7 @@
     		</td>
 		</tr>
 		<tr>
-			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">判断题：（<a href="other/判断题import.txt">导入格式示例</a>）</span></td>
+			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">判断题：（<a href="other/判断题import.txt" download="判断题import.txt">导入格式示例</a>）</span></td>
 			<td>
 			    <div class="file-field input-field">
                     <div class="btn">
@@ -96,6 +96,27 @@
     		</button>
     		</td>
 		</tr>
+		<tr>
+			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">简答题：（<a href="other/简答题import.txt" download="简答题import.txt">导入格式示例</a>）</span></td>
+			<td>
+				<div class="file-field input-field">
+					<div class="btn">
+						<span>上传文件</span>
+						<input type="file" name="shortAnswerImportFile">
+					</div>
+					<div class="file-path-wrapper">
+						<input class="file-path validate" type="text" size="30" name="shortAnswerFilePath">
+					</div>
+				</div>
+			</td>
+			<td>
+				<button class="teal darken-4 waves-effect waves-teal btn-flat" type="button"
+						onclick="importShortAnswerBegin()">
+				<span class="yellow-text text-lighten-1">导入简答题
+        		<i class="fas fa-arrow-right fa-lg right"></i></span>
+				</button>
+			</td>
+		</tr>
 	</table>
 	</form>
 	<h4>将指定格式文件导入学生信息</h4>
@@ -103,7 +124,7 @@
 	<form class="col s12" name="form2" method="post" action="importstudent" enctype="multipart/form-data">
 	<table class="mytable">
 		<tr>
-			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">学生信息文件：（<a href="other/学生import.txt">导入格式示例</a>）</span></td>
+			<td style="width: 210px;max-width:210px;"><span class="purple-text text-darken-2 comment">学生信息文件：（<a href="other/学生import.txt" download="学生import.txt">导入格式示例</a>）</span></td>
 			<td>
 			    <div class="file-field input-field">
                     <div class="btn">
@@ -171,7 +192,17 @@
 		form1.action='importjudge';
 		form1.submit();
 	}
-	
+
+	function importShortAnswerBegin(){
+		if(form1.shortAnswerFilePath.value==''){
+			alert('请先上传指定格式的简答题导入文件');
+			form1.shortAnswerImportFile.click();
+			return;
+		}
+		form1.action='importShortAnswer';
+		form1.submit();
+	}
+
 	function importStudentBegin(){
 		if(form2.studentFilePath.value==''){
 			alert('请先上传指定格式的学生信息导入文件');

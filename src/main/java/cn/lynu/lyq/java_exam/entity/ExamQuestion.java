@@ -31,6 +31,10 @@ public class ExamQuestion {
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="bank_judge_qid")
 	private BankJudgeQuestion bankJudgeQuestion;
+
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="bank_short_answer_qid")
+	private BankShortAnswerQuestion bankShortAnswerQuestion;
 	
 	private int questionType;
 	
@@ -50,6 +54,11 @@ public class ExamQuestion {
 		this.exam = exam;
 		this.bankJudgeQuestion = bankJudgeQuestion;
 		this.questionType = QuestionType.JUDGE.ordinal();
+	}
+	public ExamQuestion(Exam exam, BankShortAnswerQuestion shortAnswerQuestion) {
+		this.exam = exam;
+		this.bankShortAnswerQuestion = shortAnswerQuestion;
+		this.questionType = QuestionType.SHORT_ANSWER.ordinal();
 	}
 
 	public int getId() {
@@ -86,6 +95,14 @@ public class ExamQuestion {
 
 	public BankJudgeQuestion getBankJudgeQuestion() {
 		return bankJudgeQuestion;
+	}
+
+	public BankShortAnswerQuestion getBankShortAnswerQuestion() {
+		return bankShortAnswerQuestion;
+	}
+
+	public void setBankShortAnswerQuestion(BankShortAnswerQuestion bankShortAnswerQuestion) {
+		this.bankShortAnswerQuestion = bankShortAnswerQuestion;
 	}
 
 	public void setBankJudgeQuestion(BankJudgeQuestion bankJudgeQuestion) {

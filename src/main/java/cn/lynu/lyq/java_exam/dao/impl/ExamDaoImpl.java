@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import cn.lynu.lyq.java_exam.entity.*;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -20,11 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.lynu.lyq.java_exam.dao.BankQuestionDao;
 import cn.lynu.lyq.java_exam.dao.ExamDao;
 import cn.lynu.lyq.java_exam.dao.ExamQuestionDao;
-import cn.lynu.lyq.java_exam.entity.BankBlankFillingQuestion;
-import cn.lynu.lyq.java_exam.entity.BankChoiceQuestion;
-import cn.lynu.lyq.java_exam.entity.BankJudgeQuestion;
-import cn.lynu.lyq.java_exam.entity.Exam;
-import cn.lynu.lyq.java_exam.entity.ExamQuestion;
 
 @Component("examDao")
 @Transactional
@@ -85,7 +81,14 @@ public class ExamDaoImpl implements ExamDao {
 		Exam e = sessionFactory.getCurrentSession().get(Exam.class, id);
 		return e;
 	}
-	
+
+	@Override
+	public Exam findByName(String name) {
+		Query q=sessionFactory.getCurrentSession().createQuery("from Exam where name = ?0");
+		q.setString("0", name);
+		return (Exam) q.uniqueResult();
+	}
+
 	@Override
 	public void save(Exam e){
 		sessionFactory.getCurrentSession().save(e);
@@ -102,19 +105,22 @@ public class ExamDaoImpl implements ExamDao {
 	}
 	
 	@Override
-	public void composeExamRandom(Exam exam, int choiceNum,int blankFillingNum, int judgeNum){
+	public void composeExamRandom(Exam exam, int choiceNum,int blankFillingNum, int judgeNum,int shortAnswerNum){
 		List<BankChoiceQuestion> listChoice = bankQuestionDao.findChoiceWithComposeFlag(1);//只查题库中有组卷标记=1的题
 		List<BankBlankFillingQuestion> listBlankFilling = bankQuestionDao.findBlankFillingWithComposeFlag(1);//只查题库中有组卷标记=1的题
 		List<BankJudgeQuestion> listJudge = bankQuestionDao.findJudgeWithComposeFlag(1);//只查题库中有组卷标记=1的题
-		
+		List<BankShortAnswerQuestion> lsitShortAnswer = bankQuestionDao.findShortAnswerWithComposeFlag(1);//只查题库中有组卷标记=1的题
+
 		List<BankChoiceQuestion> listChoiceExtracted = extractRandomQuestions(listChoice,choiceNum);
 		List<BankBlankFillingQuestion> listBlankFillingExtracted = extractRandomQuestions(listBlankFilling,blankFillingNum);
 		List<BankJudgeQuestion> listJudgeExtracted = extractRandomQuestions(listJudge,judgeNum);
-		
+		List<BankShortAnswerQuestion> listShortAnswerExtracted = extractRandomQuestions(lsitShortAnswer,shortAnswerNum);
+
 		logger.debug("listChoiceExtracted="+listChoiceExtracted);
 		logger.debug("listBlankFillingExtracted="+listBlankFillingExtracted);
 		logger.debug("listJudgeExtracted="+listJudgeExtracted);
-		
+		logger.debug("listShortAnswerExtracted="+listShortAnswerExtracted);
+
 		for(BankChoiceQuestion q:listChoiceExtracted){
 			examQuestionDao.save(new ExamQuestion(exam,q));
 		}
@@ -122,6 +128,9 @@ public class ExamDaoImpl implements ExamDao {
 			examQuestionDao.save(new ExamQuestion(exam,q));
 		}
 		for(BankJudgeQuestion q:listJudgeExtracted){
+			examQuestionDao.save(new ExamQuestion(exam,q));
+		}
+		for(BankShortAnswerQuestion q:listShortAnswerExtracted){
 			examQuestionDao.save(new ExamQuestion(exam,q));
 		}
 	}
@@ -149,7 +158,8 @@ public class ExamDaoImpl implements ExamDao {
 
 	@Override
 	public void examCreateWithQuestions(Exam exam, List<BankChoiceQuestion> choiceList,
-			List<BankBlankFillingQuestion> blankList, List<BankJudgeQuestion> judgeList) {
+			List<BankBlankFillingQuestion> blankList, List<BankJudgeQuestion> judgeList,
+										List<BankShortAnswerQuestion> shortAnswerList) {
 		this.save(exam);
 		
 		if(choiceList!=null){
@@ -166,6 +176,12 @@ public class ExamDaoImpl implements ExamDao {
 		}
 		if(judgeList!=null){
 			for(BankJudgeQuestion bq:judgeList){
+				ExamQuestion eq=new ExamQuestion(exam,bq);
+				examQuestionDao.save(eq);
+			}
+		}
+		if(shortAnswerList!=null){
+			for(BankShortAnswerQuestion bq:shortAnswerList){
 				ExamQuestion eq=new ExamQuestion(exam,bq);
 				examQuestionDao.save(eq);
 			}

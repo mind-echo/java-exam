@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Java考试系统--随机抽题组卷</title>
+<title>考试系统--随机抽题组卷</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
 <link type="text/css" rel="stylesheet" href="css/material_icons.css">
@@ -89,6 +89,8 @@
 	<input type="hidden" name="blankPerScore" value="<s:property value="blankPerScore"/>">
 	<input type="hidden" name="judgeQuestionNum" value="<s:property value="judgeQuestionNum"/>">
 	<input type="hidden" name="judgePerScore" value="<s:property value="judgePerScore"/>">
+	<input type="hidden" name="shortAnswerQuestionNum" value="<s:property value="shortAnswerQuestionNum"/>">
+	<input type="hidden" name="shortAnswerPerScore" value="<s:property value="shortAnswerPerScore"/>">
 	<div id="main">
 		<div class="container" style="min-height:370px;">
 			<div id="examName" style="margin-top:20px;font-size:20px;">
@@ -108,6 +110,8 @@
 						<th>填空题每空分数</th>
 						<th>判断题个数</th>
 						<th>判断题每题分数</th>
+						<th>简答题个数</th>
+						<th>简答题每题分数</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -141,6 +145,16 @@
 							<span id="judgePerScore"><s:property value="judgePerScore"/></span>
 							<a href=# onclick='changeJudgePerScore(true);'><img src='images/plus1.png' width='20'></a>
 							<a href=# onclick='changeJudgePerScore(false);'><img src='images/minus1.png' width='20'></a>
+						</td>
+						<td id="shortAnswerQuestionNumTd">
+							<span id="shortAnswerQuestionNum"><s:property value="shortAnswerQuestionNum"/></span>
+							<a href=# onclick='changeShortAnswerQuestionNum(true);'><img src='images/plus1.png' width='20'></a>
+							<a href=# onclick='changeShortAnswerQuestionNum(false);'><img src='images/minus1.png' width='20'></a>
+						</td>
+						<td id="shortAnswerPerScoreTd">
+							<span id="shortAnswerPerScore"><s:property value="shortAnswerPerScore"/></span>
+							<a href=# onclick='changeShortAnswerPerScore(true);'><img src='images/plus1.png' width='20'></a>
+							<a href=# onclick='changeShortAnswerPerScore(false);'><img src='images/minus1.png' width='20'></a>
 						</td>
 					</tr>
 					<tr>
@@ -181,6 +195,13 @@
 	<script>
 		function changeChoiceQuestionNum(plusOrMinus){
 			var choiceQuestionNum = $("#choiceQuestionNum").text()-0;
+			var choicePerScore = $("#choicePerScore").text()-0;
+			var blankQuestionNum = $("#blankQuestionNum").text()-0;
+			var blankPerScore = $("#blankPerScore").text()-0;
+			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
+			var judgePerScore = $("#judgePerScore").text()-0;
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
 			if(plusOrMinus) {
 				choiceQuestionNum++; 
 			}else {
@@ -188,12 +209,8 @@
 			}
 			$("#choiceQuestionNum").text(choiceQuestionNum);
 			form1.choiceQuestionNum.value = choiceQuestionNum;
-			var choicePerScore = $("#choicePerScore").text()-0;
-			var blankQuestionNum = $("#blankQuestionNum").text()-0;
-			var blankPerScore = $("#blankPerScore").text()-0;
-			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
-			var judgePerScore = $("#judgePerScore").text()-0;
-			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore;
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
 			$("#totalScoreText").text(totalScore);
 		}
 		
@@ -201,6 +218,11 @@
 			var choiceQuestionNum = $("#choiceQuestionNum").text()-0;
 			var choicePerScore = $("#choicePerScore").text()-0;
 			var blankQuestionNum = $("#blankQuestionNum").text()-0;
+			var blankPerScore = $("#blankPerScore").text()-0;
+			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
+			var judgePerScore = $("#judgePerScore").text()-0;
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
 			if(plusOrMinus) {
 				blankQuestionNum++; 
 			}else {
@@ -211,8 +233,9 @@
 			var blankPerScore = $("#blankPerScore").text()-0;
 			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
 			var judgePerScore = $("#judgePerScore").text()-0;
-			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore;
-			$("#totalScoreText").text(totalScore);					
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
+			$("#totalScoreText").text(totalScore);
 		}
 		
 		function changeJudgeQuestionNum(plusOrMinus){
@@ -221,6 +244,9 @@
 			var blankQuestionNum = $("#blankQuestionNum").text()-0;
 			var blankPerScore = $("#blankPerScore").text()-0;
 			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
+			var judgePerScore = $("#judgePerScore").text()-0;
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
 			if(plusOrMinus) {
 				judgeQuestionNum++; 
 			}else {
@@ -228,14 +254,40 @@
 			}
 			$("#judgeQuestionNum").text(judgeQuestionNum);
 			form1.judgeQuestionNum.value = judgeQuestionNum;
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
+			$("#totalScoreText").text(totalScore);
+		}
+		function changeShortAnswerQuestionNum(plusOrMinus){
+			var choiceQuestionNum = $("#choiceQuestionNum").text()-0;
+			var choicePerScore = $("#choicePerScore").text()-0;
+			var blankQuestionNum = $("#blankQuestionNum").text()-0;
+			var blankPerScore = $("#blankPerScore").text()-0;
+			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
 			var judgePerScore = $("#judgePerScore").text()-0;
-			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore;
-			$("#totalScoreText").text(totalScore);	
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
+			if(plusOrMinus) {
+				shortAnswerQuestionNum++;
+			}else {
+				shortAnswerQuestionNum--;
+			}
+			$("#shortAnswerQuestionNum").text(shortAnswerQuestionNum);
+			form1.shortAnswerQuestionNum.value = shortAnswerQuestionNum;
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
+			$("#totalScoreText").text(totalScore);
 		}
 	
 		function changeChoicePerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt){
 			var choiceQuestionNum = $("#choiceQuestionNum").text()-0;
 			var choicePerScore = $("#choicePerScore").text()-0;
+			var blankQuestionNum = $("#blankQuestionNum").text()-0;
+			var blankPerScore = $("#blankPerScore").text()-0;
+			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
+			var judgePerScore = $("#judgePerScore").text()-0;
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
 			if(plusOrMinus) {
 				choicePerScore++; 
 			}else {
@@ -247,7 +299,8 @@
 			var blankPerScore = $("#blankPerScore").text()-0;
 			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
 			var judgePerScore = $("#judgePerScore").text()-0;
-			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore;
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
 			$("#totalScoreText").text(totalScore);
 		}
 		
@@ -256,6 +309,10 @@
 			var choicePerScore = $("#choicePerScore").text()-0;
 			var blankQuestionNum = $("#blankQuestionNum").text()-0;
 			var blankPerScore = $("#blankPerScore").text()-0;
+			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
+			var judgePerScore = $("#judgePerScore").text()-0;
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
 			if(plusOrMinus) {
 				blankPerScore++; 
 			}else {
@@ -265,7 +322,8 @@
 			form1.blankPerScore.value = blankPerScore;
 			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
 			var judgePerScore = $("#judgePerScore").text()-0;
-			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore;
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
 			$("#totalScoreText").text(totalScore);
 		}
 		
@@ -276,6 +334,8 @@
 			var blankPerScore = $("#blankPerScore").text()-0;
 			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
 			var judgePerScore = $("#judgePerScore").text()-0;
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
 			if(plusOrMinus) {
 				judgePerScore++; 
 			}else {
@@ -283,7 +343,28 @@
 			}
 			$("#judgePerScore").text(judgePerScore);
 			form1.judgePerScore.value = judgePerScore;
-			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore;
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
+			$("#totalScoreText").text(totalScore);
+		}
+		function changeShortAnswerPerScore(plusOrMinus,value,strategyId,choiceCnt,blankCnt,judgeCnt){
+			var choiceQuestionNum = $("#choiceQuestionNum").text()-0;
+			var choicePerScore = $("#choicePerScore").text()-0;
+			var blankQuestionNum = $("#blankQuestionNum").text()-0;
+			var blankPerScore = $("#blankPerScore").text()-0;
+			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
+			var judgePerScore = $("#judgePerScore").text()-0;
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
+			if(plusOrMinus) {
+				shortAnswerPerScore++;
+			}else {
+				shortAnswerPerScore--;
+			}
+			$("#shortAnswerPerScore").text(shortAnswerPerScore);
+			form1.shortAnswerPerScore.value = shortAnswerPerScore;
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
 			$("#totalScoreText").text(totalScore);
 		}
 		
@@ -317,7 +398,10 @@
 			var blankPerScore = $("#blankPerScore").text()-0;
 			var judgeQuestionNum = $("#judgeQuestionNum").text()-0;
 			var judgePerScore = $("#judgePerScore").text()-0;
-			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore;
+			var shortAnswerQuestionNum = $("#shortAnswerQuestionNum").text()-0;
+			var shortAnswerPerScore = $("#shortAnswerPerScore").text()-0;
+			var totalScore = choiceQuestionNum*choicePerScore + blankQuestionNum*blankPerScore + judgeQuestionNum*judgePerScore
+					+ shortAnswerQuestionNum*shortAnswerPerScore;
 			$("#totalScoreText").text(totalScore);
 	    });
 	   	

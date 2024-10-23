@@ -26,7 +26,8 @@ public class BlankQuestionSearchAction extends ActionSupport{
 	private int totalPage;
 	private int pageIndex;
 	private static final int PAGE_SIZE = 10;
-	
+	public int deleteId;
+
 	@Resource
 	private BankQuestionDao bankQuestionDao;
 
@@ -66,6 +67,15 @@ public class BlankQuestionSearchAction extends ActionSupport{
 	public void setPageIndex(int pageIndex) {
 		this.pageIndex = pageIndex;
 	}
+
+	public int getDeleteId() {
+		return deleteId;
+	}
+
+	public void setDeleteId(int deleteId) {
+		this.deleteId = deleteId;
+	}
+
 	@Override
 	public String execute() throws Exception {//初始结果
 //		questionList = bankQuestionDao.findAllBlankFilling();
@@ -80,6 +90,11 @@ public class BlankQuestionSearchAction extends ActionSupport{
 		logger.debug("answerSearch="+answerSearch);
 		logger.debug("knowledgeSearch="+knowledgeSearch);
 		questionList = bankQuestionDao.findBlankForSearch(contentSearch,answerSearch,knowledgeSearch);
+		return SUCCESS;
+	}
+
+	public String deleteQuestion(){
+		bankQuestionDao.delete(bankQuestionDao.findBlankFillingById(deleteId));
 		return SUCCESS;
 	}
 }

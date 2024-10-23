@@ -105,7 +105,7 @@ public class ExamSummaryAction extends ActionSupport {
 		for(int i=0; judgeAnswerList!=null && i<judgeAnswerList.size(); i++){
 			Parameter p = params.get("judge_q"+(i+1));
 			String value=p.getValue();
-//			logger.debug(p.getName()+":"+value);
+			logger.info(p.getName()+":"+value);
 			if(p.isDefined()==false || value.trim().equals("")){
 				judgeSubmmitedList.add(null);
 			}else{
@@ -115,6 +115,25 @@ public class ExamSummaryAction extends ActionSupport {
 		}
 		submittedAnswerMap.put(QuestionType.JUDGE, judgeSubmmitedList);
 		submittedCntMap.put(QuestionType.JUDGE, submittedJudgeCnt);
+
+		//判断题
+		List<Object> shortAnswerAnswerList = answerMap.get(QuestionType.SHORT_ANSWER);
+		List<Object> shortAnswerSubmmitedList = new ArrayList<>();
+		int submittedshortAnswerCnt=0;
+		for(int i=0; shortAnswerAnswerList!=null && i<shortAnswerAnswerList.size(); i++){
+			Parameter p = params.get("short_answer_q"+(i+1));
+			String value=p.getValue();
+			logger.info(p.getName()+":"+value);
+			if(p.isDefined()==false || value.trim().equals("")){
+				shortAnswerSubmmitedList.add(null);
+			}else{
+				shortAnswerSubmmitedList.add(value);
+				submittedshortAnswerCnt++;
+			}
+		}
+		submittedAnswerMap.put(QuestionType.SHORT_ANSWER, shortAnswerSubmmitedList);
+		submittedCntMap.put(QuestionType.SHORT_ANSWER, submittedshortAnswerCnt);
+
 		ctx.getSession().put("EXAM_SUBMITTED_ANSWER",submittedAnswerMap);
 		return SUCCESS;
 	}

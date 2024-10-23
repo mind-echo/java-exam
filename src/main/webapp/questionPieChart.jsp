@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Java考试系统--题目分析饼状图</title>
+<title>考试系统--题目分析饼状图</title>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="stylesheet" href="css/materialize.min.css">
 <link type="text/css" rel="stylesheet" href="css/material_icons.css">
@@ -35,6 +35,7 @@ body {
 						<li class="tab"><a href="#choiceTab">选择题</a></li>
 						<li class="tab"><a href="#blankTab">填空题</a></li>
 						<li class="tab"><a href="#judgeTab">判断题</a></li>
+						<li class="tab"><a href="#shortAnswerTab">简答题</a></li>
 					</ul>
 				</div>
 				<div id="choiceTab" class="col s12">
@@ -198,7 +199,7 @@ body {
 			                   </div>
 			                   <div class="input-field col l3 m4 s12">
 			                       <i class="material-icons prefix small">description</i>
-			                       <input type="text" placeholder="输入知识点" id="knowledgeSearch" name="knowledgeSearchJudge" 
+			                       <input type="text" placeholder="输入知识点" id="knowledgeSearchJudge" name="knowledgeSearchJudge"
 			                       value="<s:property value="knowledgeSearch"/>" 
 			                       class="validate" style="font-size:large">
 			                       <label for="password">知识点</label>
@@ -226,6 +227,64 @@ body {
 							var="item">
 							<tr
 								style="background-color:<s:if test="#st.odd">#efefef</s:if><s:else>#ffffff</s:else>">
+								<td><s:property value="#st.index+1" />.</td>
+								<td style="text-align: left;"><s:property value="content" /></td>
+							</tr>
+							<tr>
+								<td colspan="2" style="height: 20px"></td>
+							</tr>
+						</s:iterator>
+						</tbody>
+					</table>
+				</div>
+				<div id="shortAnswerTab" class="col s12">
+					<!-- 填空题 选项卡 -->
+					<form name="shortAnswersearchform" method="post" action="shortAnswersearchlist1">
+						<div class="row">
+							<div class="input-field col l3 m4 s12">
+								<i class="material-icons prefix small">info_outline</i>
+								<input type="text" placeholder="输入题干包含的内容" id="contentSearchShortAnswer" name="contentSearchShortAnswer"
+									   value="<s:property value="contentSearch"/>"
+									   class="validate" style="font-size:large">
+								<label for="contentSearch">题干内容</label>
+							</div>
+							<div class="input-field col l3 m4 s12">
+								<i class="tiny material-icons prefix ">toc</i>
+								<input type="text" placeholder="输入答案中包含的内容" id="answerSearchShortAnswer" name="answerSearchShortAnswer"
+									   value="<s:property value="answerSearch"/>"
+									   class="validate" style="font-size:large">
+								<label for="answerSearch">答案内容</label>
+							</div>
+							<div class="input-field col l3 m4 s12">
+								<i class="material-icons prefix small">description</i>
+								<input type="text" placeholder="输入知识点" id="knowledgeSearchShortAnswer" name="knowledgeSearchShortAnswer"
+									   value="<s:property value="knowledgeSearch"/>"
+									   class="validate" style="font-size:large">
+								<label for="password">知识点</label>
+							</div>
+							<div class="input-field col l3 m4 s12 vertical-align"><!-- change to ajaxSearch for dialog  -->
+								<button class="red darken-4 waves-effect waves-teal btn-flat" type="button" onclick="ajaxSearchShortAnswer()">
+									<span class="yellow-text text-lighten-1">搜索
+					        		<i class="material-icons right">search</i></span>
+								</button>
+							</div>
+						</div>
+					</form>
+					<table class="mytable">
+						<thead>
+						<tr>
+							<th width="50px">序号</th>
+							<th width="50px">名称</th>
+							<th>题干</th>
+							<th width="80px">答案</th>
+							<th>知识点</th>
+						</tr>
+						</thead>
+						<tbody id="shortAnswerListBody">
+						<s:iterator value="#session.QUESTION_STATS_SHORTANSWERKLIST" status="st"
+									var="item">
+							<tr
+									style="background-color:<s:if test="#st.odd">#efefef</s:if><s:else>#ffffff</s:else>">
 								<td><s:property value="#st.index+1" />.</td>
 								<td style="text-align: left;"><s:property value="content" /></td>
 							</tr>
@@ -312,6 +371,23 @@ body {
 					$('#blankListBody').html(showHtml);
 				});
 		}
+		function ajaxSearchShortAnswer(){
+		$.post("shortAnswersearchlist1",
+				{"contentSearch":document.forms['shortAnswersearchform'].contentSearchShortAnswer.value,
+				"answerSearch":document.forms['shortAnswersearchform'].answerSearchShortAnswer.value,
+				"knowledgeSearch":document.forms['shortAnswersearchform'].knowledgeSearchShortAnswer.value},
+				function(data,status){
+					var showHtml="";
+					for(var i=0; i<data.length; i++){
+						showHtml+="<tr style='background:"+(i%2==0?"#efefef":"#ffffff")+";'><td>"+data[i].id+"</td>";
+						showHtml+="<td>"+(!data[i].name?'':data[i].name)+"</td>";
+						showHtml+="<td><a href='#chartdialog' class='modal-trigger' onclick='changeStatsChart(3,"+data[i].id+")'>"+(!data[i].content?'':data[i].content)+"</a></td>";
+						showHtml+="<td>"+(!data[i].answer?'':data[i].answer)+"</td>";
+						showHtml+="<td>"+(!data[i].knowledgePoint?'':data[i].knowledgePoint)+"</td></tr>";
+					}
+					$('#shortAnswerListBody').html(showHtml);
+				});
+		}
 		
 		function ajaxSearchJudge(){
 			$.post("judgesearchlist1",
@@ -321,11 +397,11 @@ body {
 					function(data,status){
 						var showHtml="";
 						for(var i=0; i<data.length; i++){
-							showHtml+="<tr style='background:"+(i%2==0?"#efefef":"#ffffff")+";'><td>"+data[i].id+"</td>";
-							showHtml+="<td>"+(!data[i].name?'':data[i].name)+"</td>";
-							showHtml+="<td><a href='#chartdialog' class='modal-trigger' onclick='changeStatsChart(2,"+data[i].id+")'>"+(!data[i].content?'':data[i].content)+"</a></td>";
-							showHtml+="<td>"+(!data[i].answer?'':data[i].answer)+"</td>";
-							showHtml+="<td>"+(!data[i].knowledgePoint?'':data[i].knowledgePoint)+"</td></tr>";
+						showHtml+="<tr style='background:"+(i%2==0?"#efefef":"#ffffff")+";'><td>"+data[i].id+"</td>";
+						showHtml+="<td>"+(!data[i].name?'':data[i].name)+"</td>";
+						showHtml+="<td><a href='#chartdialog' class='modal-trigger' onclick='changeStatsChart(2,"+data[i].id+")'>"+(!data[i].content?'':data[i].content)+"</a></td>";
+						showHtml+="<td>"+(!data[i].answer?'':data[i].answer)+"</td>";
+						showHtml+="<td>"+(!data[i].knowledgePoint?'':data[i].knowledgePoint)+"</td></tr>";
 						}
 						$('#judgeListBody').html(showHtml);
 					});
