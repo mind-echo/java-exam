@@ -1,4 +1,6 @@
 create schema java_exam;
+
+SET FOREIGN_KEY_CHECKS=1;
 use java_exam;
 create table bankblankfillingquestion
 (
@@ -441,3 +443,4 @@ create table studentexamscore
 )
     charset = utf8;
 
+SET FOREIGN_KEY_CHECKS=1;
