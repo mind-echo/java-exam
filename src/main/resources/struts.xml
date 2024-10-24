@@ -164,7 +164,7 @@
 		<action name="searchjudge" class="judgeQuestionSearch">
 			<result>searchJudge.jsp</result>
 		</action>
-		<action name="deletejudge" class="judgeQuestionSearch" method="deleteQuestion">
+		<action name="deleteJudge" class="judgeQuestionSearch" method="deleteQuestion">
 			<result type="chain">
 				<param name="actionName">searchjudge</param>
 			</result>
